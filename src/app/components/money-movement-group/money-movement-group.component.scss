@@ -1,0 +1,37 @@
+:host {
+    display: block;
+    margin-bottom: 16px;
+    position: relative;
+    background: #d3d3d333;
+    border-radius: 20px;
+    padding: 16px;
+}
+
+.date {
+    background: white;
+    position: absolute;
+    padding: 16px;
+    border-radius: 20px;
+    top: 16px;
+    left: 16px;
+}
+
+.pillar {
+    width: 2px;
+    height: calc(100% + 16px);
+    background-color: dodgerblue;
+    position: absolute;
+    left: calc(50% - 1px);
+    top: 0;
+    
+    &.is-first-group {
+        height: calc(100% - 16px);
+        top: 32px;
+    }
+
+    &.is-last-group {
+        height: calc(100% - 32px);
+    }
+
+}
+

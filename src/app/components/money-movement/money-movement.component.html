@@ -1,0 +1,4 @@
+<div class="movement" [class.minus]="isNegative">
+    <div class="circle"></div>
+    <div class="details">{{ movement.amount.toFormat('0.00') }} {{ movement.amount.getCurrency() }}</div>
+</div>

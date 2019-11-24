@@ -1,0 +1,3 @@
+<ng-container *ngFor="let movementGroup of moneyMovementGroups | keyvalue; first as isFirst, last as isLast">
+    <money-movement-group [moneyMovementGroup]="movementGroup.value" [date]="movementGroup.key" [isFirst]="isFirst" [isLast]="isLast"></money-movement-group>
+</ng-container>

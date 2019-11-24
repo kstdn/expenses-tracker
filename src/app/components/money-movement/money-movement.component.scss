@@ -1,0 +1,32 @@
+:host {
+    display: block;
+    padding: 16px;
+}
+
+.movement {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+    .details {
+        width: calc(50% - 16px);
+        padding: 0 16px;
+    }
+
+    &.minus {
+        flex-direction: row-reverse;
+
+        .details {
+            text-align: right;
+        }
+    }
+}
+
+
+.circle {
+    width: 32px;
+    height: 32px;
+    background-color: dodgerblue;
+    border-radius: 100%;
+    position: relative;
+}
