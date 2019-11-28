@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
+import { Money } from 'src/app/helpers/util';
 
 @Component({
   selector: 'money-movement',
@@ -15,12 +16,12 @@ export class MoneyMovementComponent implements OnInit {
   ngOnInit() {
   }
 
-  // get amount(): Amount {
-  //   return this.movement && getAmount(this.movement.amount);
-  // }
+  get amount(): string {
+    return `${Money(this.movement.money).toFormat('0.00')} ${Money(this.movement.money).getCurrency()}`;
+  }
 
   get isNegative(): boolean {
-    return this.movement.sign < 1;
+    return Money(this.movement.money).isNegative();
   }
 
 }

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +9,7 @@ import { MoneyMovementComponent } from './components/money-movement/money-moveme
 import { MoneyMovementsComponent } from './components/money-movements/money-movements.component';
 import { PortalModule } from '@angular/cdk/portal';
 import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { MoneyMovementCrudComponent } from './components/money-movement-crud/mon
   imports: [
     BrowserModule,
     AppRoutingModule,
-    PortalModule
+    PortalModule,
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

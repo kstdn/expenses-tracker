@@ -3,7 +3,7 @@
 <div class="main">
     <router-outlet></router-outlet>
     <div class="btns summary">
-        {{ balance$ | async }}
+        {{ balance }}
         <button class="btn primary" (click)="addMovement()">Add</button>
     </div>
 </div>

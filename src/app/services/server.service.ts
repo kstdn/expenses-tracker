@@ -1,46 +1,39 @@
 import { Injectable } from '@angular/core';
-
-import * as lowdb from 'lowdb';
-import * as FileAsync from "lowdb/adapters/FileAsync"
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { MoneyMovement } from '../models/MoneyMovement';
-import { mockData } from './mock';
+import { MoneyMovementType } from '../models/MoneyMovementType';
+import { SimpleMoney } from '../models/SimpleMoney';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServerService {
 
-  db: MoneyMovement[];
+  baseUrl: string = 'http://localhost:3000/';
 
-  constructor() {
-    this.init();
+  constructor(private http: HttpClient) { }
+
+  getAllMovements(): Observable<MoneyMovement[]> {
+    return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses');
   }
 
-  async init() {
-    this.db = mockData;
+  addMovement(
+    amount: number,
+    date: Date,
+    type: MoneyMovementType,
+    description?: string
+  ): Observable<MoneyMovement> {
+    return this.http.post<MoneyMovement>(this.baseUrl + 'expenses', {
+      amount,
+      date,
+      type,
+      description
+    });
   }
 
-  getAllMovements() {
-    return this.db;
+  getCurrentBalance(): Observable<SimpleMoney> {
+    return this.http.get<SimpleMoney>(this.baseUrl + 'expenses/balance');
   }
 
-  getMovement(id: string) {
-    return this.db.find(movement => movement.id === id);
-  }
-
-  addMovement(movement: MoneyMovement) {
-    this.db.push({ ...movement, id: getGuid()})
-  }
-
-  updateMovement(id: string) {
-
-  }
-}
-
-const getGuid = (): string => {
-  const S4 = () => {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-  const guid = (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-  return guid;
 }

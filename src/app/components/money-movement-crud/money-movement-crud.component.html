@@ -5,10 +5,11 @@
             {{ getMode() }} money movement
         </div>
         <div class="dialog-body">
+            <input type="number" [(ngModel)]="amount">
         </div>
         <div class="dialog-footer btns">
             <button class="btn neutral" (click)="remove()">Close</button>
-            <button class="btn primary" (click)="remove()">Submit</button>
+            <button class="btn primary" (click)="submit()">Submit</button>
         </div>
     </div>
 </div>

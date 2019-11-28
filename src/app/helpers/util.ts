@@ -1,10 +1,6 @@
-import { Amount } from "../models/Amount";
+import Dinero from 'dinero.js'
+import { SimpleMoney } from '../models/SimpleMoney';
 
-export const getAmount: ((amount: number) => Amount) = (amount: number) => {
-    const beforeDecimalPoint: number = Math.floor(Math.abs(amount));
-    return {
-        sign: Math.sign(amount),
-        beforeDecimalPoint,
-        afterDecimalPoint: (Math.abs(amount) - beforeDecimalPoint)
-    }
+export const Money = (simpleDinero: SimpleMoney) => {
+    return Dinero(simpleDinero);
 };

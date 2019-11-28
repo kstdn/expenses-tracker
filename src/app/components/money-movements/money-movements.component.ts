@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
 import { finalize } from 'rxjs/operators';
-import { BackendService } from 'src/app/services/backend.service';
 import { MoneyMovementGroup } from 'src/app/models/MoneyMovementGroup';
-import { PortalService } from 'src/app/services/portal.service';
+import { MovementsService } from 'src/app/services/movements.service';
 
 @Component({
   selector: 'app-money-movements',
@@ -14,22 +13,30 @@ import { PortalService } from 'src/app/services/portal.service';
 export class MoneyMovementsComponent implements OnInit {
 
   moneyMovementGroups: MoneyMovementGroup[] = [];
-  
+
   loading: boolean = false;
   error: boolean = false;
 
   constructor(
-    private backend: BackendService
+    private movementsService: MovementsService,
+    private elementRef: ElementRef
   ) { }
 
   ngOnInit() {
-    this.getData();
+    this.movementsService.changes$
+      .pipe(takeWhileAlive(this))
+      .subscribe(() => {
+        this.getData();
+        setTimeout(() => {
+          this.elementRef.nativeElement.scrollTop = this.elementRef.nativeElement.scrollHeight;
+        })
+      })
   }
-  
+
   getData() {
     this.loading = true;
     this.error = false;
-    this.backend.getAllMoneyMovementGroups$()
+    this.movementsService.getAllMoneyMovementGroups$()
       .pipe(
         takeWhileAlive(this),
         finalize(() => this.loading = false)

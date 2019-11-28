@@ -1,9 +1,9 @@
 import { MoneyMovementType } from './MoneyMovementType';
+import { SimpleMoney } from './SimpleMoney';
 
 export interface MoneyMovement {
     id?: string;
-    amount: Dinero.Dinero;
-    sign: 1 | -1;
+    money: SimpleMoney;
     date: Date;
     type: MoneyMovementType;
     description? : string;
