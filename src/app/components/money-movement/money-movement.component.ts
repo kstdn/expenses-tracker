@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { Money } from 'src/app/helpers/util';
+import { DialogsService } from 'src/app/services/dialogs.service';
 
 @Component({
   selector: 'money-movement',
@@ -11,7 +12,9 @@ export class MoneyMovementComponent implements OnInit {
 
   @Input() movement: MoneyMovement;
 
-  constructor() { }
+  constructor(
+    private dialogsService: DialogsService
+  ) { }
 
   ngOnInit() {
   }
@@ -22,6 +25,10 @@ export class MoneyMovementComponent implements OnInit {
 
   get isNegative(): boolean {
     return Money(this.movement.money).isNegative();
+  }
+
+  openUpdateMovementDialog() {
+    this.dialogsService.openMovementCrud(this.movement);
   }
 
 }

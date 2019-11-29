@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
 import { finalize } from 'rxjs/operators';
-import { MoneyMovementGroup } from 'src/app/models/MoneyMovementGroup';
+import { MoneyMovementGroup, MoneyMovementGroups } from 'src/app/models/MoneyMovementGroup';
 import { MovementsService } from 'src/app/services/movements.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { MovementsService } from 'src/app/services/movements.service';
 @AutoUnsubscribe()
 export class MoneyMovementsComponent implements OnInit {
 
-  moneyMovementGroups: MoneyMovementGroup[] = [];
+  moneyMovementGroups: MoneyMovementGroups = {};
 
   loading: boolean = false;
   error: boolean = false;

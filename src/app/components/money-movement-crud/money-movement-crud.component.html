@@ -5,7 +5,14 @@
             {{ getMode() }} money movement
         </div>
         <div class="dialog-body">
-            <input type="number" [(ngModel)]="amount">
+            <mat-form-field>
+                <input matInput type="number" [(ngModel)]="amount">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" (dateChange)="addEvent('change', $event)">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
         </div>
         <div class="dialog-footer btns">
             <button class="btn neutral" (click)="remove()">Close</button>

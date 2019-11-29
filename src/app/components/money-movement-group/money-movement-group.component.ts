@@ -1,15 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MoneyMovementGroup } from 'src/app/models/MoneyMovementGroup';
+import { MoneyMovement } from 'src/app/models/MoneyMovement';
 
 @Component({
   selector: 'money-movement-group',
   templateUrl: './money-movement-group.component.html',
   styleUrls: ['./money-movement-group.component.scss']
 })
-export class MoneyMovementRowComponent implements OnInit {
+export class MoneyMovementGroupComponent implements OnInit {
 
-  @Input() moneyMovementGroup: MoneyMovementGroup;
-  @Input() date: Date;
+  @Input() moneyMovements: MoneyMovement[];
+  @Input() timestamp: Date;
   @Input() isFirst: boolean;
   @Input() isLast: boolean;
 

@@ -1,28 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
-import { PortalService } from 'src/app/services/portal.service';
 import { MovementsService } from 'src/app/services/movements.service';
 import { finalize } from 'rxjs/operators';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
-  selector: 'app-money-movement-crud',
   templateUrl: './money-movement-crud.component.html',
   styleUrls: ['./money-movement-crud.component.scss']
 })
 export class MoneyMovementCrudComponent implements OnInit {
 
-  movement: MoneyMovement;
-
   amount: number;
+  timestamp: string;
 
   constructor(
-    private portalService: PortalService,
-    private movementsService: MovementsService
+    private movementsService: MovementsService,
+    public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public movement: MoneyMovement
   ) { }
 
   ngOnInit() {
     if (this.movement) {
-
+      this.amount = this.movement.money.amount;
+      this.timestamp = this.movement.timestamp;
     } else {
 
     }
@@ -36,18 +37,28 @@ export class MoneyMovementCrudComponent implements OnInit {
     }
   }
 
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.timestamp = event.value.toISOString();
+  }
+
   submit() {
-    if (this.amount === undefined || this.amount === null) {
+    if (!this.amount) {
       return;
     }
 
-    this.movementsService.addMovement(this.amount)
+    if(!this.movement) {
+      this.movementsService.addMovement$(this.amount, this.timestamp)
       .pipe(finalize(() => this.remove()))
       .subscribe();
+    } else {
+      this.movementsService.updateMovement$(this.movement.id, this.amount, this.timestamp)
+      .pipe(finalize(() => this.remove()))
+      .subscribe();
+    }
   }
 
   remove() {
-    this.portalService.portal = undefined;
+    this.dialogRef.close();
   }
 
 }

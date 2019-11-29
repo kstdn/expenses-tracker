@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ComponentPortal } from '@angular/cdk/portal';
-import { PortalService } from './services/portal.service';
-import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
 import { MovementsService } from './services/movements.service';
 import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
+import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
+import { DialogsService } from './services/dialogs.service';
 
 @Component({
   selector: 'app-root',
@@ -15,18 +14,14 @@ export class AppComponent implements OnInit {
   balance = '';
 
   constructor(
-    private portalService: PortalService,
-    private movementsService: MovementsService
+    private movementsService: MovementsService,
+    private dialogsService: DialogsService
   ) { }
 
   ngOnInit() {
     this.movementsService.changes$
       .pipe(takeWhileAlive(this))
       .subscribe(() => this.refreshBalance())
-  }
-
-  get portal() {
-    return this.portalService.portal;
   }
 
   refreshBalance() {
@@ -37,7 +32,7 @@ export class AppComponent implements OnInit {
       })
   }
 
-  addMovement() {
-    this.portalService.portal = new ComponentPortal(MoneyMovementCrudComponent);
+  addMovement(): void {
+    this.dialogsService.openMovementCrud();
   }
 }

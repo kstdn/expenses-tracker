@@ -4,7 +4,7 @@ import { ServerService } from './server.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as groupBy from 'lodash.groupby';
-import { MoneyMovementGroup } from '../models/MoneyMovementGroup';
+import { MoneyMovementGroup, MoneyMovementGroups } from '../models/MoneyMovementGroup';
 import { MoneyMovementType } from '../models/MoneyMovementType';
 import { Money } from '../helpers/util';
 
@@ -27,13 +27,17 @@ export class MovementsService {
     return this.serverService.getAllMovements();
   }
 
-  getAllMoneyMovementGroups$(): Observable<MoneyMovementGroup[]> {
-    return this.getAllMovements$()
-      .pipe(map(movements => groupBy(movements, 'date')));
+  getAllMoneyMovementGroups$(): Observable<MoneyMovementGroups> {
+    return this.serverService.getAllMovementGroups();
   }
 
-  addMovement(amount: number, date: Date = new Date(), type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
-    return this.serverService.addMovement(amount, date, type, description)
+  addMovement$(amount: number, timestamp: string = new Date().toISOString(), type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
+    return this.serverService.addMovement(amount, timestamp, type, description)
+      .pipe(tap(() => this.changes$.next()));
+  }
+
+  updateMovement$(id: string, amount: number, timestamp: string, type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
+    return this.serverService.updateMovement(id, amount, timestamp, type, description)
       .pipe(tap(() => this.changes$.next()));
   }
 
