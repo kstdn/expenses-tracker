@@ -83,7 +83,7 @@ html, body {
 
 	background-color: white;
 	border-radius: 20px;
-	width: 600px;
+	//width: 600px;
     max-width: calc(100% - 32px);
 
 	.dialog-header {
@@ -111,6 +111,15 @@ html, body {
 	user-select: none;
 	
 	transition: all 0.2s ease-in-out;
+}
+
+.btn[disabled] {
+	opacity: 0.3;
+}
+
+.btn[disabled]:hover {
+	transform: none;
+	pointer-events: none;
 }
 
 .btn:focus {

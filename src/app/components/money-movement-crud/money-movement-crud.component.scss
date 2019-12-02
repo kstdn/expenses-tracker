@@ -1,0 +1,17 @@
+mat-form-field.single-line {
+    display: block;
+}
+
+.amount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+mat-form-field.amount-whole-part {
+    width: 165px;
+}
+
+mat-form-field.amount-decimal-part {
+    width: 50px;
+}

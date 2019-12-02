@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 
 
@@ -36,6 +37,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     FormsModule,
     HttpClientModule,
     MatDialogModule
