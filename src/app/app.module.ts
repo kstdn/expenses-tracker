@@ -16,6 +16,7 @@ import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/mat
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
+import { AmountInputComponent } from './components/shared/amount-input/amount-input.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MoneyMovementGroupComponent,
     MoneyMovementComponent,
     MoneyMovementsComponent,
-    MoneyMovementCrudComponent
+    MoneyMovementCrudComponent,
+    AmountInputComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent

@@ -22,14 +22,12 @@
                     </mat-select>
                 </mat-form-field>
             <div class="amount-row">
-                <mat-form-field class="amount-whole-part">
-                    <mat-label>Amount</mat-label>
-                    <input matInput type="number" [(ngModel)]="amountWholePartAbs">
-                </mat-form-field>
-                <span>.</span>
-                <mat-form-field class="amount-decimal-part">
-                    <input matInput type="number" [(ngModel)]="amountDecimalPart">
-                </mat-form-field>
+                <amount-input 
+                    [initialMoney]="getInitialMoney()" 
+                    (moneyChanged)="onMoneyChanged($event)"
+                    [isNegative]="isNegative()"
+                    (isNegativeChanged)="onIsNegativeChanged($event)"
+                    ></amount-input>
             </div>
             <mat-form-field class="single-line">
                 <mat-label>Date</mat-label>

@@ -4,7 +4,8 @@ import { MovementsService } from 'src/app/services/movements.service';
 import { finalize } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { Precision } from 'src/app/helpers/Constants';
+import { SimpleMoney } from 'src/app/models/SimpleMoney';
+import { Money } from 'src/app/helpers/util';
 
 interface MovementType {
   id: number;
@@ -33,8 +34,7 @@ export class MoneyMovementCrudComponent implements OnInit {
     text: 'Planned'
   }];
 
-  amountWholePartAbs: number = 0;
-  amountDecimalPart: number = 0;
+  amount: number;
   directionId: number = this.movementDirections[0].id;
   typeId: number = this.movementTypes[0].id;
   timestamp: string = new Date().toISOString();
@@ -48,12 +48,10 @@ export class MoneyMovementCrudComponent implements OnInit {
 
   ngOnInit() {
     if (this.movement) {
-      const amountWholePart = this.movement.money.amount / (Math.pow(10, Precision))
-      this.amountWholePartAbs = Math.floor(Math.abs(amountWholePart));
-      this.amountDecimalPart = Math.abs(this.movement.money.amount % (Math.pow(10, Precision)));
+      this.amount = this.movement.money.amount;
       this.timestamp = this.movement.timestamp;
       this.typeId = this.movement.type;
-      this.directionId = amountWholePart < 0 ? 0 : 1;
+      this.directionId = Money(this.movement.money).isNegative() ? 0 : 1;
       this.description = this.movement.description;
     } else {
 
@@ -72,19 +70,22 @@ export class MoneyMovementCrudComponent implements OnInit {
     this.timestamp = event.value.toISOString();
   }
 
-  submit() {
-    const amountWholePart = this.amountWholePartAbs;
-    const amountDecimalPart = Math.abs(this.amountDecimalPart); // abs should not be neccessary
-    const sum = (amountWholePart * Math.pow(10, Precision)) + amountDecimalPart;
+  onMoneyChanged(money: SimpleMoney): void {
+    this.amount = money && money.amount;
+  }
 
-    const amount = this.isNegative() ? sum * -1 : sum;
+  onIsNegativeChanged(isNegative: boolean): void {
+    this.directionId = isNegative ? 0 : 1;
+  }
+
+  submit() {
 
     if (!this.movement) {
-      this.movementsService.addMovement$(amount, this.timestamp, this.typeId, this.description)
+      this.movementsService.addMovement$(this.amount, this.timestamp, this.typeId, this.description)
         .pipe(finalize(() => this.remove()))
         .subscribe();
     } else {
-      this.movementsService.updateMovement$(this.movement.id, amount, this.timestamp, this.typeId, this.description)
+      this.movementsService.updateMovement$(this.movement.id, this.amount, this.timestamp, this.typeId, this.description)
         .pipe(finalize(() => this.remove()))
         .subscribe();
     }
@@ -97,12 +98,11 @@ export class MoneyMovementCrudComponent implements OnInit {
   get submitIsActive() {
     return this.typeId !== undefined &&
       this.directionId !== undefined &&
-      !!this.timestamp &&
-      this.amountDecimalPart < 100 &&
-      this.amountDecimalPart >= 0 &&
-      ((this.amountWholePartAbs === 0 &&
-        this.amountDecimalPart > 0) ||
-        this.amountWholePartAbs > 0)
+      !!this.timestamp && !!this.amount;
+  }
+
+  getInitialMoney() {
+    return this.movement && this.movement.money;
   }
 
   remove() {
