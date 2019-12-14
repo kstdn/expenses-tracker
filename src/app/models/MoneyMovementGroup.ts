@@ -4,4 +4,4 @@ export interface MoneyMovementGroup {
     moneyMovements: MoneyMovement[];
 }
 
-export type MoneyMovementGroups = { [key: string]: MoneyMovementGroup };
+export type MoneyMovementGroups<T extends string|number> = { [key in T]: MoneyMovementGroup };

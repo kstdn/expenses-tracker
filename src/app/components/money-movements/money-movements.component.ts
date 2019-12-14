@@ -12,7 +12,7 @@ import { MovementsService } from 'src/app/services/movements.service';
 @AutoUnsubscribe()
 export class MoneyMovementsComponent implements OnInit {
 
-  moneyMovementGroups: MoneyMovementGroups = {};
+  moneyMovementGroups: MoneyMovementGroups<string> = {};
 
   loading: boolean = false;
   error: boolean = false;
@@ -36,7 +36,7 @@ export class MoneyMovementsComponent implements OnInit {
   getData() {
     this.loading = true;
     this.error = false;
-    this.movementsService.getAllMoneyMovementGroups$()
+    this.movementsService.getAllMoneyMovementGroupsBy$('timestamp')
       .pipe(
         takeWhileAlive(this),
         finalize(() => this.loading = false)

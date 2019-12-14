@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { MoneyMovement } from '../models/MoneyMovement';
 import { ServerService } from './server.service';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import * as groupBy from 'lodash.groupby';
-import { MoneyMovementGroup, MoneyMovementGroups } from '../models/MoneyMovementGroup';
+import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
 import { MoneyMovementType } from '../models/MoneyMovementType';
-import { Money } from '../helpers/util';
+import { Money, groupMovementsBy } from '../helpers/util';
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +26,8 @@ export class MovementsService {
     return this.serverService.getAllMovements();
   }
 
-  getAllMoneyMovementGroups$(): Observable<MoneyMovementGroups> {
-    return this.serverService.getAllMovementGroups();
+  getAllMoneyMovementGroupsBy$(key: keyof MoneyMovement): Observable<MoneyMovementGroups<string>> {
+    return this.getAllMovements$().pipe(map(data => groupMovementsBy<string>(data, key)));
   }
 
   addMovement$(amount: number, timestamp: string = new Date().toISOString(), type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
@@ -43,6 +42,8 @@ export class MovementsService {
 
   getCurrentBalance$(): Observable<string> {
     return this.serverService.getCurrentBalance()
-      .pipe(map(balance => Money(balance).toFormat('0.00') + 'BGN'))
+      .pipe(
+        map(balance => Money(balance).toFormat('0.00') + 'BGN')
+      )
   }
 }

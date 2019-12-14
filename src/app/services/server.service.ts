@@ -19,10 +19,6 @@ export class ServerService {
     return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses');
   }
 
-  getAllMovementGroups(): Observable<MoneyMovementGroups> {
-    return this.http.get<MoneyMovementGroups>(this.baseUrl + 'expenses/groups');
-  }
-
   addMovement(
     amount: number,
     timestamp: string,
