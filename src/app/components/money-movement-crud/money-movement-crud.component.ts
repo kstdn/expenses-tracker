@@ -6,6 +6,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { SimpleMoney } from 'src/app/models/SimpleMoney';
 import { Money } from 'src/app/helpers/util';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Messages } from 'src/app/constants/Messages';
 
 interface MovementType {
   id: number;
@@ -34,6 +36,9 @@ export class MoneyMovementCrudComponent implements OnInit {
     text: 'Planned'
   }];
 
+  deleteButtonVisible = false;
+  deleteConfirmationPromptVisible = false;
+
   amount: number;
   directionId: number = this.movementDirections[0].id;
   typeId: number = this.movementTypes[0].id;
@@ -42,6 +47,7 @@ export class MoneyMovementCrudComponent implements OnInit {
 
   constructor(
     private movementsService: MovementsService,
+    private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public movement: MoneyMovement
   ) { }
@@ -53,6 +59,8 @@ export class MoneyMovementCrudComponent implements OnInit {
       this.typeId = this.movement.type;
       this.directionId = Money(this.movement.money).isNegative() ? 0 : 1;
       this.description = this.movement.description;
+
+      this.deleteButtonVisible = true;
     } else {
 
     }
@@ -64,6 +72,10 @@ export class MoneyMovementCrudComponent implements OnInit {
     } else {
       return 'Add';
     }
+  }
+
+  isNegative() {
+    return this.directionId === 0;
   }
 
   dateChange(type: string, event: MatDatepickerInputEvent<Date>) {
@@ -91,8 +103,22 @@ export class MoneyMovementCrudComponent implements OnInit {
     }
   }
 
-  isNegative() {
-    return this.directionId === 0;
+  submitDelete() {
+    this.movementsService.deleteMovement$(this.movement.id)
+      .subscribe({
+        next: () => { 
+          this.snackBar.open(Messages.Deleted)
+          this.remove()
+        }
+      });
+  }
+
+  showDeleteConfirmationPrompt() {
+    this.deleteConfirmationPromptVisible = true;
+  }
+
+  hideDeleteConfirmationPrompt() {
+    this.deleteConfirmationPromptVisible = false;
   }
 
   get submitIsActive() {

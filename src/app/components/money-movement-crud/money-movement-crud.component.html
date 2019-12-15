@@ -14,20 +14,16 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="single-line">
-                    <mat-label>Movement type</mat-label>
-                    <mat-select [(value)]="typeId">
-                        <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.id">
-                            {{ movementType.text }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <mat-label>Movement type</mat-label>
+                <mat-select [(value)]="typeId">
+                    <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.id">
+                        {{ movementType.text }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <div class="amount-row">
-                <amount-input 
-                    [initialMoney]="getInitialMoney()" 
-                    (moneyChanged)="onMoneyChanged($event)"
-                    [isNegative]="isNegative()"
-                    (isNegativeChanged)="onIsNegativeChanged($event)"
-                    ></amount-input>
+                <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)"
+                    [isNegative]="isNegative()" (isNegativeChanged)="onIsNegativeChanged($event)"></amount-input>
             </div>
             <mat-form-field class="single-line">
                 <mat-label>Date</mat-label>
@@ -41,9 +37,21 @@
                 <input matInput type="text" [(ngModel)]="description">
             </mat-form-field>
         </div>
-        <div class="dialog-footer btns">
-            <button class="btn neutral" (click)="remove()">Close</button>
-            <button class="btn primary" (click)="submit()" [disabled]="!submitIsActive">Submit</button>
+        <div class="dialog-footer">
+            <div class="btns" *ngIf="!deleteConfirmationPromptVisible">
+                <button class="btn neutral" *ngIf="deleteButtonVisible" (click)="showDeleteConfirmationPrompt()">Delete</button>
+                <div class="flex-divider"></div>
+                <button class="btn neutral" (click)="remove()">Close</button>
+                <button class="btn primary" (click)="submit()" [disabled]="!submitIsActive">Submit</button>
+            </div>
+            <div class="btns" *ngIf="deleteConfirmationPromptVisible">
+                <span class="delete-confirmation-prompt-text">
+                    Are you sure you want to delete this?
+                </span>
+                <div class="flex-divider"></div>
+                <button class="btn neutral" (click)="hideDeleteConfirmationPrompt()">No</button>
+                <button class="btn primary" (click)="submitDelete()">Yes</button>
+            </div>
         </div>
     </div>
 </div>

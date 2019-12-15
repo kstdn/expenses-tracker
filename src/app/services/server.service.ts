@@ -38,13 +38,17 @@ export class ServerService {
     amount: number,
     timestamp: string,
     type: MoneyMovementType,
-    description: string) {
+    description: string): Observable<MoneyMovement> {
     return this.http.put<MoneyMovement>(this.baseUrl + 'expenses/' + id, {
       amount,
       timestamp,
       type,
       description
     });
+  }
+  
+  deleteMovement(id: string): Observable<void> {
+    return this.http.delete<void>(this.baseUrl + 'expenses/' + id);
   }
 
   getCurrentBalance(): Observable<SimpleMoney> {

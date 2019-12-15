@@ -40,6 +40,11 @@ export class MovementsService {
       .pipe(tap(() => this.changes$.next()));
   }
 
+  deleteMovement$(id: string): Observable<void> {
+    return this.serverService.deleteMovement(id)
+      .pipe(tap(() => this.changes$.next()));
+  }
+
   getCurrentBalance$(): Observable<string> {
     return this.serverService.getCurrentBalance()
       .pipe(
