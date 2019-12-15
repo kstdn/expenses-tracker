@@ -30,13 +30,13 @@ export class MovementsService {
     return this.getAllMovements$().pipe(map(data => groupMovementsBy<string>(data, key)));
   }
 
-  addMovement$(amount: number, timestamp: string = new Date().toISOString(), type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
-    return this.serverService.addMovement(amount, timestamp, type, description)
+  addMovement$(movement: MoneyMovement) {
+    return this.serverService.addMovement(movement)
       .pipe(tap(() => this.changes$.next()));
   }
 
-  updateMovement$(id: string, amount: number, timestamp: string, type: MoneyMovementType = MoneyMovementType.Immediate, description?: string) {
-    return this.serverService.updateMovement(id, amount, timestamp, type, description)
+  updateMovement$(movement: MoneyMovement) {
+    return this.serverService.updateMovement(movement)
       .pipe(tap(() => this.changes$.next()));
   }
 

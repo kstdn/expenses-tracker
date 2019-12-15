@@ -10,7 +10,7 @@ export const Money = (simpleDinero: SimpleMoney) => {
 export const getDate = (dateString: string): string => {
     const temp = new Date(dateString);
     temp.setHours(0, 0, 0, 0);
-    return temp.toISOString();
+    return temp.toUTCString();
 }
 
 export const groupMovementsBy = <T extends string|number>(movements: MoneyMovement[], groupByProp: keyof MoneyMovement): MoneyMovementGroups<T> => {

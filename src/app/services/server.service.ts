@@ -19,32 +19,12 @@ export class ServerService {
     return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses');
   }
 
-  addMovement(
-    amount: number,
-    timestamp: string,
-    type: MoneyMovementType,
-    description?: string
-  ): Observable<MoneyMovement> {
-    return this.http.post<MoneyMovement>(this.baseUrl + 'expenses', {
-      amount,
-      timestamp,
-      type,
-      description
-    });
+  addMovement(movement: MoneyMovement): Observable<MoneyMovement> {
+    return this.http.post<MoneyMovement>(this.baseUrl + 'expenses', movement);
   }
 
-  updateMovement(
-    id: string,
-    amount: number,
-    timestamp: string,
-    type: MoneyMovementType,
-    description: string): Observable<MoneyMovement> {
-    return this.http.put<MoneyMovement>(this.baseUrl + 'expenses/' + id, {
-      amount,
-      timestamp,
-      type,
-      description
-    });
+  updateMovement(movement: MoneyMovement): Observable<MoneyMovement> {
+    return this.http.put<MoneyMovement>(this.baseUrl + 'expenses', movement);
   }
   
   deleteMovement(id: string): Observable<void> {

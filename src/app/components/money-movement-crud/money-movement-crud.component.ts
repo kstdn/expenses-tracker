@@ -42,7 +42,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   amount: number;
   directionId: number = this.movementDirections[0].id;
   typeId: number = this.movementTypes[0].id;
-  timestamp: string = new Date().toISOString();
+  timestamp: Date = new Date();
   description: string;
 
   constructor(
@@ -55,7 +55,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   ngOnInit() {
     if (this.movement) {
       this.amount = this.movement.money.amount;
-      this.timestamp = this.movement.timestamp;
+      this.timestamp = new Date(this.movement.timestamp);
       this.typeId = this.movement.type;
       this.directionId = Money(this.movement.money).isNegative() ? 0 : 1;
       this.description = this.movement.description;
@@ -79,7 +79,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 
   dateChange(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.timestamp = event.value.toISOString();
+    this.timestamp = event.value;
   }
 
   onMoneyChanged(money: SimpleMoney): void {
@@ -93,11 +93,16 @@ export class MoneyMovementCrudComponent implements OnInit {
   submit() {
 
     if (!this.movement) {
-      this.movementsService.addMovement$(this.amount, this.timestamp, this.typeId, this.description)
+      const movement: MoneyMovement = collectInputs(this);
+      this.movementsService.addMovement$(movement)
         .pipe(finalize(() => this.remove()))
         .subscribe();
     } else {
-      this.movementsService.updateMovement$(this.movement.id, this.amount, this.timestamp, this.typeId, this.description)
+      const updatedMovement: MoneyMovement = {
+        ...this.movement,
+        ...collectInputs(this)
+      }
+      this.movementsService.updateMovement$(updatedMovement)
         .pipe(finalize(() => this.remove()))
         .subscribe();
     }
@@ -135,4 +140,13 @@ export class MoneyMovementCrudComponent implements OnInit {
     this.dialogRef.close();
   }
 
+}
+
+const collectInputs = (component: MoneyMovementCrudComponent): MoneyMovement => {
+  return {
+    money: { amount: component.amount, currency:'BGN', precision: 2 },
+    timestamp: component.timestamp.toUTCString(),
+    type: component.typeId,
+    description: component.description
+  }
 }
