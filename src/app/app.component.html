@@ -1,9 +1,11 @@
 <div class="header">Header</div>
 
 <div class="main">
+    <month-picker (intervalChanged)='onIntervalChange($event)'></month-picker>
     <router-outlet></router-outlet>
     <div class="btns summary">
-        {{ balance }}
+        <div class="flex-divider"></div>
+        <span (click)="enterNewBalance()">{{ balance }}</span>
         <button class="btn primary" (click)="addMovement()">Add</button>
     </div>
 </div>

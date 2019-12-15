@@ -18,6 +18,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AmountInputComponent } from './components/shared/amount-input/amount-input.component';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { MonthPickerComponent } from './components/shared/month-picker/month-picker.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
     MoneyMovementComponent,
     MoneyMovementsComponent,
     MoneyMovementCrudComponent,
-    AmountInputComponent
+    AmountInputComponent,
+    MonthPickerComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent
@@ -43,7 +46,8 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
     FormsModule,
     HttpClientModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    FontAwesomeModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },

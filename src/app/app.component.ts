@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MovementsService } from './services/movements.service';
 import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
-import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
 import { DialogsService } from './services/dialogs.service';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { DateInterval } from './components/shared/month-picker/DateInterval';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +17,16 @@ export class AppComponent implements OnInit {
 
   constructor(
     private movementsService: MovementsService,
-    private dialogsService: DialogsService
+    private dialogsService: DialogsService,
+    private iconLibrary: FaIconLibrary
   ) { }
 
   ngOnInit() {
     this.movementsService.changes$
       .pipe(takeWhileAlive(this))
       .subscribe(() => this.refreshBalance())
+
+    this.iconLibrary.addIcons(faChevronLeft, faChevronRight)
   }
 
   refreshBalance() {
@@ -30,6 +35,14 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: balance => this.balance = balance
       })
+  }
+
+  onIntervalChange(interval: DateInterval) {
+    // console.log(interval)
+  }
+
+  enterNewBalance() {
+    
   }
 
   addMovement(): void {

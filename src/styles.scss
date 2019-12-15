@@ -63,7 +63,8 @@ html, body {
 }
 
 * {
-    box-sizing: border-box;
+	box-sizing: border-box;
+	user-select: none;
 }
 
 .dialog-backdrop {
