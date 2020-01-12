@@ -10,7 +10,9 @@
 }
 
 .main {
-    height: calc(100% - 40px - 64px);
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
 }
 
 .summary {

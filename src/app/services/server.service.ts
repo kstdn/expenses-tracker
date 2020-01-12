@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MoneyMovement } from '../models/MoneyMovement';
-import { MoneyMovementType } from '../models/MoneyMovementType';
 import { SimpleMoney } from '../models/SimpleMoney';
-import { MoneyMovementGroup, MoneyMovementGroups } from '../models/MoneyMovementGroup';
+import { DateInterval } from '../components/shared/month-picker/DateInterval';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +14,13 @@ export class ServerService {
 
   constructor(private http: HttpClient) { }
 
-  getAllMovements(): Observable<MoneyMovement[]> {
-    return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses');
+  getAllMovements(interval: DateInterval): Observable<MoneyMovement[]> {
+    return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses', {
+      params: {
+        from: `${interval.from.getTime()}`,
+        to: `${interval.to.getTime()}`
+      }
+    });
   }
 
   addMovement(movement: MoneyMovement): Observable<MoneyMovement> {

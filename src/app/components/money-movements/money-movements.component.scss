@@ -1,6 +1,10 @@
 :host {
     display: block;
-    height: 100%;
+    flex: 1;
     overflow: auto;
     margin: 16px;
+}
+
+month-picker {
+    margin-bottom: 16px;
 }

@@ -4,7 +4,6 @@ import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
 import { DialogsService } from './services/dialogs.service';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { DateInterval } from './components/shared/month-picker/DateInterval';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +34,6 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: balance => this.balance = balance
       })
-  }
-
-  onIntervalChange(interval: DateInterval) {
-    // console.log(interval)
   }
 
   enterNewBalance() {

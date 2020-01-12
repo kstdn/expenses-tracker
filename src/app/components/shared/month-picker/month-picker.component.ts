@@ -20,8 +20,7 @@ export class MonthPickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.updateEmulatedDate(new Date(), this.initMonthIndex, this.initYear);
-    this.updateFormated();
+    this.updateState(new Date(), this.initMonthIndex, this.initYear);
   }
 
   updateEmulatedDate(date: Date, initMonthIndex?: number, initYear?: number) {
@@ -52,14 +51,16 @@ export class MonthPickerComponent implements OnInit {
 
   goToPreviousMonth() {
     const prevMonthDate = subMonths(this.emulatedDate, 1);
-    this.updateEmulatedDate(prevMonthDate);
-    this.updateFormated();
-    this.emitChanges();
+    this.updateState(prevMonthDate);
   }
   
   goToNextMonth() {
     const nextMonthDate = addMonths(this.emulatedDate, 1);
-    this.updateEmulatedDate(nextMonthDate);
+    this.updateState(nextMonthDate);
+  }
+
+  updateState(date: Date, initMonthIndex?: number, initYear?: number) {
+    this.updateEmulatedDate(date, initMonthIndex, initYear);
     this.updateFormated();
     this.emitChanges();
   }

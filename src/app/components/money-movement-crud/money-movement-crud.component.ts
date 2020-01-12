@@ -109,7 +109,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 
   submitDelete() {
-    this.movementsService.deleteMovement$(this.movement.id)
+    this.movementsService.deleteMovement$(this.movement)
       .subscribe({
         next: () => { 
           this.snackBar.open(Messages.Deleted)
@@ -145,7 +145,7 @@ export class MoneyMovementCrudComponent implements OnInit {
 const collectInputs = (component: MoneyMovementCrudComponent): MoneyMovement => {
   return {
     money: { amount: component.amount, currency:'BGN', precision: 2 },
-    timestamp: component.timestamp.toUTCString(),
+    timestamp: component.timestamp.getTime(),
     type: component.typeId,
     description: component.description
   }
