@@ -22,6 +22,7 @@ import { MonthPickerComponent } from './components/shared/month-picker/month-pic
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HelpComponent } from './components/views/help/help/help.component';
 import { LoaderComponent } from './components/shared/loader/loader.component';
+import { BalanceUpdateComponent } from './components/balance-update/balance-update.component';
 
 @NgModule({
   declarations: [
@@ -33,10 +34,12 @@ import { LoaderComponent } from './components/shared/loader/loader.component';
     AmountInputComponent,
     MonthPickerComponent,
     HelpComponent,
-    LoaderComponent
+    LoaderComponent,
+    BalanceUpdateComponent
   ],
   entryComponents: [
-    MoneyMovementCrudComponent
+    MoneyMovementCrudComponent,
+    BalanceUpdateComponent
   ],
   imports: [
     BrowserModule,

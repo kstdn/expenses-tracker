@@ -4,7 +4,7 @@ import { ServerService } from './server.service';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, tap, finalize } from 'rxjs/operators';
 import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
-import { Money, groupMovementsBy, addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval } from '../helpers/util';
+import { groupMovementsBy, addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval, formatMoney } from '../helpers/util';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
 
 @Injectable({
@@ -92,14 +92,14 @@ export class MovementsService {
   getCurrentBalance$(): Observable<string> {
     return this.serverService.getCurrentBalance()
       .pipe(
-        map(balance => Money(balance).toFormat('0.00') + 'BGN')
+        map(balance => formatMoney(balance))
       )
   }
 
   getAccumulatedCurrentBalance$(): Observable<string> {
     return this.serverService.getCurrentBalance()
       .pipe(
-        map(balance => Money(balance).toFormat('0.00') + 'BGN')
+        map(balance => formatMoney(balance))
       )
   }
 }

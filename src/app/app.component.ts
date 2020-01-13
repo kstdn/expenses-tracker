@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
   }
 
   enterNewBalance() {
-    
+    this.dialogsService.openBalanceUpdate();
   }
 
   addMovement(): void {

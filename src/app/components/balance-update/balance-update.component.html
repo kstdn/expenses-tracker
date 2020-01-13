@@ -1,0 +1,20 @@
+<div class="dialog-header">
+    Balance
+</div>
+<div class="dialog-body">
+    <loader *ngIf='loading'></loader>
+    <ng-container *ngIf="!loading">
+        <div>The current balance is {{ currentBalanceFormatted }}</div>
+        <div class="amount-row">
+            <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)">
+            </amount-input>
+        </div>
+    </ng-container>
+</div>
+<div class="dialog-footer">
+    <div class="btns">
+        <div class="flex-divider"></div>
+        <button class="btn neutral" (click)="remove()">Close</button>
+        <button class="btn primary" (click)="submit()" [disabled]="!submitIsActive">Submit</button>
+    </div>
+</div>

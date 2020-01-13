@@ -67,38 +67,24 @@ html, body {
 	user-select: none;
 }
 
-.dialog-backdrop {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(0, 5, 15, 0.7);
-	z-index: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+mat-dialog-container.mat-dialog-container {
+	padding: 0;
+	border-radius: 20px;
 }
 
-.dialog-wrapper {
+.dialog-header {
+	padding: 24px;
+	font-size: 1rem;
+	text-transform: uppercase;
+	font-weight: bold;
+}
 
-	background-color: white;
-	border-radius: 20px;
-	//width: 600px;
-    max-width: calc(100% - 32px);
+.dialog-body {
+	padding: 16px;
+}
 
-	.dialog-header {
-		padding: 24px;
-		font-size: 1rem;
-		text-transform: uppercase;
-		font-weight: bold;
-	}
-	.dialog-body {
-		padding: 16px;
-	}
-	.dialog-footer {
-		padding: 16px;
-	}
+.dialog-footer {
+	padding: 16px;
 }
 
 .btn {

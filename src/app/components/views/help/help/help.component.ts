@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { MovementsService } from 'src/app/services/movements.service';
 import { tap } from 'rxjs/operators';
+import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
 
 const BtnMessages = {
   CHECK: 'Check balance',
@@ -13,6 +14,7 @@ const BtnMessages = {
   templateUrl: './help.component.html',
   styleUrls: ['./help.component.scss']
 })
+@AutoUnsubscribe()
 export class HelpComponent implements OnInit {
 
   balanceButtonMessage: string = BtnMessages.CHECK;
@@ -32,7 +34,10 @@ export class HelpComponent implements OnInit {
       this.movementsService.getCurrentBalance$(),
       this.movementsService.getAccumulatedCurrentBalance$()
     ])
-    .pipe(tap(() => this.balanceButtonMessage = BtnMessages.CHECK))
+    .pipe(
+      takeWhileAlive(this),
+      tap(() => this.balanceButtonMessage = BtnMessages.CHECK)
+    )
     .subscribe(([currentBalance, currentAccumulatedBalance]) => {
       if(currentBalance === currentAccumulatedBalance) {
         this.balanceCheckMessage = `Balance is correct!`

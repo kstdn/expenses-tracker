@@ -88,3 +88,5 @@ export const removeFromGroup = (movementGroups:MoneyMovementGroups, groupBy: key
 export const isInInterval = (movement: MoneyMovement, interval: DateInterval) => {
     return movement.timestamp >= interval.from.getTime() && movement.timestamp <= interval.to.getTime();
 }
+
+export const formatMoney = (simpleMoney: SimpleMoney) => Money(simpleMoney).toFormat('0.00') + 'BGN'
