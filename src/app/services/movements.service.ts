@@ -95,4 +95,11 @@ export class MovementsService {
         map(balance => Money(balance).toFormat('0.00') + 'BGN')
       )
   }
+
+  getAccumulatedCurrentBalance$(): Observable<string> {
+    return this.serverService.getCurrentBalance()
+      .pipe(
+        map(balance => Money(balance).toFormat('0.00') + 'BGN')
+      )
+  }
 }

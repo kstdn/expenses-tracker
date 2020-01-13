@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
 import { MoneyMovementGroups } from 'src/app/models/MoneyMovementGroup';
 import { MovementsService } from 'src/app/services/movements.service';
-import { DateInterval } from '../shared/month-picker/DateInterval';
+import { DateInterval } from '../../../shared/month-picker/DateInterval';
 
 @Component({
   selector: 'app-money-movements',

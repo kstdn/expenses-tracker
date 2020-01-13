@@ -6,9 +6,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MoneyMovementGroupComponent } from './components/money-movement-group/money-movement-group.component';
-import { MoneyMovementComponent } from './components/money-movement/money-movement.component';
-import { MoneyMovementsComponent } from './components/money-movements/money-movements.component';
+import { MoneyMovementGroupComponent } from './components/views/money-movements/money-movement-group/money-movement-group.component';
+import { MoneyMovementComponent } from './components/views/money-movements/money-movement/money-movement.component';
+import { MoneyMovementsComponent } from './components/views/money-movements/money-movements/money-movements.component';
 import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -20,6 +20,8 @@ import { AmountInputComponent } from './components/shared/amount-input/amount-in
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MonthPickerComponent } from './components/shared/month-picker/month-picker.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HelpComponent } from './components/views/help/help/help.component';
+import { LoaderComponent } from './components/shared/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MoneyMovementsComponent,
     MoneyMovementCrudComponent,
     AmountInputComponent,
-    MonthPickerComponent
+    MonthPickerComponent,
+    HelpComponent,
+    LoaderComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent

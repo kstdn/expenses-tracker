@@ -23,7 +23,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.movementsService.changes$
       .pipe(takeWhileAlive(this))
-      .subscribe(() => this.refreshBalance())
+      .subscribe(() => 
+        setTimeout(() => this.refreshBalance(), 1000))
 
     this.iconLibrary.addIcons(faChevronLeft, faChevronRight)
   }

@@ -39,4 +39,8 @@ export class ServerService {
     return this.http.get<SimpleMoney>(this.baseUrl + 'expenses/balance');
   }
 
+  getAccumulatedCurrentBalance(): Observable<SimpleMoney> {
+    return this.http.get<SimpleMoney>(this.baseUrl + 'expenses/balance-accumulated');
+  }
+
 }
