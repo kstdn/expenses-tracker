@@ -9,6 +9,7 @@
             <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)">
             </amount-input>
         </div>
+        <div *ngIf="newMovement">This change will add a new {{ newMovementType }} with amount {{ newMovementFormatted }}.</div>
     </ng-container>
 </div>
 <div class="dialog-footer">
