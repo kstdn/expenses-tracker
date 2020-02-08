@@ -75,4 +75,8 @@ export class AmountInputComponent implements OnInit {
       this.amountDecimalPart >= 0;
   }
 
+  onFocus($event: FocusEvent) {
+    ($event.target as HTMLInputElement).select();
+  }
+
 }
