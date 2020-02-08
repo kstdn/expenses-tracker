@@ -60,10 +60,6 @@ export class BalanceUpdateComponent implements OnInit {
     }
   }
 
-  onIsNegativeChanged(isNegative: boolean): void {
-    //this.directionId = isNegative ? 0 : 1;
-  }
-
   get submitIsActive() {
     return this.newMovement !== undefined;
   }

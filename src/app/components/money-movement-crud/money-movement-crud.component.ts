@@ -54,15 +54,13 @@ export class MoneyMovementCrudComponent implements OnInit {
 
   ngOnInit() {
     if (this.movement) {
-      this.amount = this.movement.money.amount;
+      this.amount = Math.abs(this.movement.money.amount);
       this.timestamp = new Date(this.movement.timestamp);
       this.typeId = this.movement.type;
       this.directionId = Money(this.movement.money).isNegative() ? 0 : 1;
       this.description = this.movement.description;
 
       this.deleteButtonVisible = true;
-    } else {
-
     }
   }
 
@@ -86,12 +84,7 @@ export class MoneyMovementCrudComponent implements OnInit {
     this.amount = money && money.amount;
   }
 
-  onIsNegativeChanged(isNegative: boolean): void {
-    this.directionId = isNegative ? 0 : 1;
-  }
-
   submit() {
-
     if (!this.movement) {
       const movement: MoneyMovement = collectInputs(this);
       this.movementsService.addMovement$(movement)
@@ -127,9 +120,10 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 
   get submitIsActive() {
-    return this.typeId !== undefined &&
-      this.directionId !== undefined &&
-      !!this.timestamp && !!this.amount;
+    return this.typeId !== undefined 
+      && this.directionId !== undefined 
+      && !!this.timestamp 
+      && this.amount > 0;
   }
 
   getInitialMoney() {
@@ -143,8 +137,10 @@ export class MoneyMovementCrudComponent implements OnInit {
 }
 
 const collectInputs = (component: MoneyMovementCrudComponent): MoneyMovement => {
+  const multiplier = component.isNegative() ? -1 : 1;
+  
   return {
-    money: { amount: component.amount, currency:'BGN', precision: 2 },
+    money: { amount: component.amount * multiplier, currency:'BGN', precision: 2 },
     timestamp: component.timestamp.getTime(),
     type: component.typeId,
     description: component.description

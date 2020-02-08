@@ -19,8 +19,7 @@
         </mat-select>
     </mat-form-field>
     <div class="amount-row">
-        <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)"
-            [isNegative]="isNegative()" (isNegativeChanged)="onIsNegativeChanged($event)"></amount-input>
+        <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)"></amount-input>
     </div>
     <mat-form-field class="single-line">
         <mat-label>Date</mat-label>

@@ -12,6 +12,7 @@ export class MoneyMovementComponent implements OnInit, OnChanges {
 
   @Input() movement: MoneyMovement;
 
+  amount = '';
   isNegative = false;
 
   constructor(
@@ -21,11 +22,16 @@ export class MoneyMovementComponent implements OnInit, OnChanges {
   ngOnInit() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.isNegative = Money(this.movement.money).isNegative();
+    this.isNegative = this.getIsNegative();
+    this.amount = this.getAmount();
   }
 
-  get amount(): string {
+  getAmount() {
     return `${Money(this.movement.money).toFormat('0.00')} ${Money(this.movement.money).getCurrency()}`;
+  }
+
+  getIsNegative() {
+    return Money(this.movement.money).isNegative();
   }
 
   openUpdateMovementDialog() {
