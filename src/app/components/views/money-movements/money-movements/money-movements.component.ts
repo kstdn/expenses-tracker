@@ -20,6 +20,10 @@ export class MoneyMovementsComponent implements OnInit {
     return this.movementsService.loadingGroups;
   }
 
+  get hasOnlyOneGroup() {
+    return Object.keys(this.moneyMovementGroups).length === 1;
+  }
+
   error: boolean = false;
 
   constructor(

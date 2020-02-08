@@ -12,6 +12,7 @@ export class MoneyMovementGroupComponent implements OnInit {
   @Input() timestamp: Date;
   @Input() isFirst: boolean;
   @Input() isLast: boolean;
+  @Input() isOnly: boolean;
 
   constructor() { }
 

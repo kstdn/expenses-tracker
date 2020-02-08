@@ -33,5 +33,9 @@
         height: calc(100% - 32px);
     }
 
+    &.is-only-group {
+        display: none;
+    }
+
 }
 

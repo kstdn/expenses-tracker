@@ -5,6 +5,6 @@
 <div class="money-movement-groups-container">
     <ng-container *ngFor="let movementGroup of moneyMovementGroups | keyvalue; first as isFirst, last as isLast">
         <money-movement-group [moneyMovements]="movementGroup.value.moneyMovements" [timestamp]="movementGroup.key"
-            [isFirst]="isFirst" [isLast]="isLast"></money-movement-group>
+            [isFirst]="isFirst" [isLast]="isLast" [isOnly]="hasOnlyOneGroup"></money-movement-group>
     </ng-container>
 </div>
