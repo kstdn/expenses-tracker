@@ -1,4 +1,4 @@
 <div class="movement" (click)="openUpdateMovementDialog()" [class.minus]="isNegative">
-    <div class="circle"></div>
+    <div class="circle" [class.negative]="isNegative"></div>
     <div class="details">{{ amount }}</div>
 </div>
