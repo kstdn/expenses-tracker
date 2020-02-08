@@ -76,7 +76,11 @@ export class MovementsService {
   updateMovement$(movement: MoneyMovement) {
     return this.serverService.updateMovement(movement)
       .pipe(tap(updatedMovement => {
-        updateInGroup(this.movementGroups, this.groupBy, updatedMovement, this.interval)
+        if(isInInterval(updatedMovement, this.interval)) {
+          updateInGroup(this.movementGroups, this.groupBy, updatedMovement, this.interval)
+        } else {
+          removeFromGroup(this.movementGroups, this.groupBy, updatedMovement)
+        }
         this.changes$.next();
       }));
   }

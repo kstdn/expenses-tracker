@@ -25,64 +25,75 @@ export const groupMovementsBy = (movements: MoneyMovement[], groupByProp: keyof 
 }
 
 const getGroupBy = (movement: MoneyMovement, groupByProp: keyof MoneyMovement) => {
-    if(groupByProp === 'money' || groupByProp === 'type') return;
-    
+    if (groupByProp === 'money' || groupByProp === 'type') return;
+
     let groupBy: string;
-    if(groupByProp === 'timestamp') {
+    if (groupByProp === 'timestamp') {
         groupBy = getDate(movement[groupByProp]);
-    } else  {
+    } else {
         groupBy = movement[groupByProp];
     }
     return groupBy;
 }
 
-export const addToExistingGroupOrCreate = (movementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement) => {
-    let moneyMovementGroup = movementGroups[getGroupBy(movement, groupBy)];
-    if(!moneyMovementGroup) {
-        moneyMovementGroup = { moneyMovements:[] };
-        movementGroups[getGroupBy(movement, groupBy)] = moneyMovementGroup;
+export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement, movementIndex?: number) => {
+    const key = getGroupBy(movement, groupBy);
+    let moneyMovementGroup = moneyMovementGroups[key];
+
+    if (moneyMovementGroup) {
+        // Update the group
+        let moneyMovements;
+        if(movementIndex !== undefined) {
+            moneyMovementGroup.moneyMovements.splice(movementIndex, 0, movement);
+            moneyMovements = moneyMovementGroup.moneyMovements;
+        } else {
+            moneyMovements = [
+                ...moneyMovementGroup.moneyMovements,
+                movement
+            ]
+        }
+        moneyMovementGroup = { moneyMovements }
+    } else {
+        // Create new group
+        moneyMovementGroup = { moneyMovements: [movement] };
     }
-    moneyMovementGroup.moneyMovements.push(movement);
+
+    // Add to groups object
+    moneyMovementGroups[key] = moneyMovementGroup;
 }
 
-export const updateInGroup = (movementGroups:MoneyMovementGroups, groupBy: keyof MoneyMovement, updatedMovement: MoneyMovement, interval: DateInterval) => {
-    
+export const updateInGroup = (movementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, updatedMovement: MoneyMovement, interval: DateInterval) => {
+
     let movement: MoneyMovement;
     let group: MoneyMovementGroup;
     for (const key in movementGroups) {
         if (movementGroups.hasOwnProperty(key)) {
             group = movementGroups[key];
             movement = group.moneyMovements.find(m => m.id === updatedMovement.id);
-            if(movement) {
+            if (movement) {
                 break;
             }
         }
     }
 
-    const oldGroupByValue = getGroupBy(movement, groupBy);
-    const newGroupbyValue = getGroupBy(updatedMovement, groupBy)
-    
-    // Check if group was changed
-    if(oldGroupByValue !== newGroupbyValue) {
-        removeFromGroup(movementGroups, groupBy, movement);
-        if(isInInterval(updatedMovement, interval)) {
-            addToExistingGroupOrCreate(movementGroups, groupBy, updatedMovement);
-        }
-    } else {
-        Object.assign(movement, updatedMovement);
-    }
+    const movementIndex = removeFromGroup(movementGroups, groupBy, movement);
+    addToExistingGroupOrCreate(movementGroups, groupBy, updatedMovement, movementIndex);
 }
 
-export const removeFromGroup = (movementGroups:MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement) => {
+export const removeFromGroup = (movementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement): number => {
     const group: MoneyMovementGroup = movementGroups[getGroupBy(movement, groupBy)];
-    
+
+    const index = group.moneyMovements.indexOf(movement);
+
     // Remove movement from group
     group.moneyMovements = group.moneyMovements.filter(mm => mm.id !== movement.id);
 
     // Also remove group if this was the last movement inside
-    if(group.moneyMovements.length === 0) {
+    if (group.moneyMovements.length === 0) {
         delete movementGroups[getGroupBy(movement, groupBy)];
     }
+
+    return index;
 }
 
 export const isInInterval = (movement: MoneyMovement, interval: DateInterval) => {
