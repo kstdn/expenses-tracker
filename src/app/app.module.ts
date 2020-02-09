@@ -25,6 +25,12 @@ import { LoaderComponent } from './components/shared/loader/loader.component';
 import { BalanceUpdateComponent } from './components/balance-update/balance-update.component';
 import { BalanceTileComponent } from './components/balance-tile/balance-tile.component';
 import { TimepointsComponent } from './components/views/timepoints/timepoints.component';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './app.effects';
 
 @NgModule({
   declarations: [
@@ -58,7 +64,16 @@ import { TimepointsComponent } from './components/views/timepoints/timepoints.co
     HttpClientModule,
     MatDialogModule,
     MatSnackBarModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers, 
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+      }
+    }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forRoot([AppEffects])
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
