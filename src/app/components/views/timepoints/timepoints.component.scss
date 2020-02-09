@@ -1,0 +1,38 @@
+@import 'vars';
+
+:host {
+    display: block;
+    flex: 1;
+    overflow: auto;
+    margin: 16px;
+}
+
+.timepoint-picker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timepoint-picker {
+    max-width: 375px;
+    background: $primary;
+    border-radius: 20px;
+    padding: 16px;
+}
+
+.timepoint-option {
+    display: inline-block;
+    color: white;
+    padding: 20px;
+    width: 45px;
+    height: 45px;
+    margin: 2px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    &.selected {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+    }
+}

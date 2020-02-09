@@ -24,6 +24,7 @@ import { HelpComponent } from './components/views/help/help/help.component';
 import { LoaderComponent } from './components/shared/loader/loader.component';
 import { BalanceUpdateComponent } from './components/balance-update/balance-update.component';
 import { BalanceTileComponent } from './components/balance-tile/balance-tile.component';
+import { TimepointsComponent } from './components/views/timepoints/timepoints.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { BalanceTileComponent } from './components/balance-tile/balance-tile.com
     HelpComponent,
     LoaderComponent,
     BalanceUpdateComponent,
-    BalanceTileComponent
+    BalanceTileComponent,
+    TimepointsComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent,
