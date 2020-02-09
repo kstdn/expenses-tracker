@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MovementsService } from 'src/app/services/movements.service';
-import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
+import { AutoUnsubscribe } from 'take-while-alive';
 import { DialogsService } from 'src/app/services/dialogs.service';
+import * as fromStore from 'src/app/store';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
+import { formatMoney } from 'src/app/helpers/util';
 
 @Component({
   selector: 'balance-tile',
@@ -11,28 +14,16 @@ import { DialogsService } from 'src/app/services/dialogs.service';
 @AutoUnsubscribe()
 export class BalanceTileComponent implements OnInit {
 
-  text = '';
+  loading$ = this.store.select(fromStore.selectBalanceLoading);
+  loaded$ = this.store.select(fromStore.selectBalanceLoaded);
+  balance$ = this.store.select(fromStore.selectMovementBalance).pipe(map(formatMoney));
 
   constructor(
-    private movementsService: MovementsService,
-    private dialogsService: DialogsService
+    private dialogsService: DialogsService,
+    private store: Store<fromStore.State>
   ) { }
 
-  ngOnInit() {
-    this.movementsService.changes$
-      .pipe(takeWhileAlive(this))
-      .subscribe(() =>
-        setTimeout(() => this.refreshBalance(), 1000))
-  }
-
-  refreshBalance() {
-    this.text = 'Loading...';
-    this.movementsService.getCurrentBalance$()
-      .pipe(takeWhileAlive(this))
-      .subscribe({
-        next: balance => this.text = balance
-      })
-  }
+  ngOnInit() { }
 
   enterNewBalance() {
     this.dialogsService.openBalanceUpdate();

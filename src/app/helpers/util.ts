@@ -36,6 +36,10 @@ const getGroupBy = (movement: MoneyMovement, groupByProp: keyof MoneyMovement) =
     return groupBy;
 }
 
+export const hasOnlyOneGroup = (moneyMovementGroups: MoneyMovementGroups) => {
+    return Object.keys(moneyMovementGroups).length === 1;
+}
+
 export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement, movementIndex?: number) => {
     const key = getGroupBy(movement, groupBy);
     let moneyMovementGroup = moneyMovementGroups[key];
@@ -43,7 +47,7 @@ export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGro
     if (moneyMovementGroup) {
         // Update the group
         let moneyMovements;
-        if(movementIndex !== undefined) {
+        if (movementIndex !== undefined) {
             moneyMovementGroup.moneyMovements.splice(movementIndex, 0, movement);
             moneyMovements = moneyMovementGroup.moneyMovements;
         } else {

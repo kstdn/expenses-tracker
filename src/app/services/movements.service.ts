@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MoneyMovement } from '../models/MoneyMovement';
 import { ServerService } from './server.service';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map, tap, finalize } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
-import { groupMovementsBy, addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval, formatMoney } from '../helpers/util';
+import { addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval, formatMoney } from '../helpers/util';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
 
 @Injectable({
@@ -25,42 +25,18 @@ export class MovementsService {
     private serverService: ServerService
   ) { }
 
-  refreshMovements() {
-    this.movementGroups = undefined;
-    return this.getAllMoneyMovementGroups$()
-      .subscribe({
-        next: result => this.movementGroups = result,
-        error: error => console.log('Error getting movements')
-      });
-  }
-
   setDateInterval(interval: DateInterval) {
     this.interval = interval;
-    this.refreshMovements();
     this.changes$.next();
   }
 
   setGroupingCriteria(groupBy: keyof MoneyMovement) {
     this.groupBy = groupBy;
-    this.refreshMovements();
     this.changes$.next();
   }
 
   private getAllMovements$(interval: DateInterval): Observable<MoneyMovement[]> {
     return this.serverService.getAllMovements(interval);
-  }
-
-  getAllMoneyMovementGroups$(): Observable<MoneyMovementGroups> {
-    if (this.movementGroups) {
-      return of(this.movementGroups);
-    }
-
-    this.loadingGroups = true;
-    return this.getAllMovements$(this.interval)
-      .pipe(
-        finalize(() => this.loadingGroups = false),
-        map(data => groupMovementsBy(data, this.groupBy))
-      );
   }
 
   addMovement$(movement: MoneyMovement) {
@@ -91,13 +67,6 @@ export class MovementsService {
         removeFromGroup(this.movementGroups, this.groupBy, movement);
         this.changes$.next();
       }));
-  }
-
-  getCurrentBalance$(): Observable<string> {
-    return this.serverService.getCurrentBalance()
-      .pipe(
-        map(balance => formatMoney(balance))
-      )
   }
 
   getAccumulatedCurrentBalance$(): Observable<string> {

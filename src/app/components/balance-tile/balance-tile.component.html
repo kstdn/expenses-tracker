@@ -1,1 +1,7 @@
-<span (click)="enterNewBalance()">{{ text }}</span>
+<ng-container *ngIf="loaded$ | async as balance; else loading">
+    <span (click)="enterNewBalance()">{{ balance$ |async }}</span>
+</ng-container>
+
+<ng-template #loading>
+    <span>Loading...</span>
+</ng-template>

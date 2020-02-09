@@ -1,10 +1,15 @@
 <month-picker (intervalChanged)='onIntervalChange($event)'></month-picker>
 
-<loader *ngIf="loading"></loader>
+<loader *ngIf="loading$ | async"></loader>
 
-<div class="money-movement-groups-container">
-    <ng-container *ngFor="let movementGroup of moneyMovementGroups | keyvalue; first as isFirst, last as isLast">
-        <money-movement-group [moneyMovements]="movementGroup.value.moneyMovements" [timestamp]="movementGroup.key"
-            [isFirst]="isFirst" [isLast]="isLast" [isOnly]="hasOnlyOneGroup"></money-movement-group>
-    </ng-container>
-</div>
+<ng-container *ngIf="loaded$ | async">
+    <div class="money-movement-groups-container">
+        <ng-container *ngIf="moneyMovementGroups$ | async as moneyMovementGroups">
+            <ng-container *ngFor="let movementGroup of moneyMovementGroups | keyvalue; first as isFirst, last as isLast">
+                <money-movement-group [moneyMovements]="movementGroup.value.moneyMovements" [timestamp]="movementGroup.key"
+                    [isFirst]="isFirst" [isLast]="isLast" [isOnly]="hasOnlyOneGroup(moneyMovementGroups)">
+                </money-movement-group>
+            </ng-container>
+        </ng-container>
+    </div>
+</ng-container>

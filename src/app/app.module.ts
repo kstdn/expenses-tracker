@@ -26,11 +26,11 @@ import { BalanceUpdateComponent } from './components/balance-update/balance-upda
 import { BalanceTileComponent } from './components/balance-tile/balance-tile.component';
 import { TimepointsComponent } from './components/views/timepoints/timepoints.component';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+import { reducers, metaReducers } from './store/reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
-import { AppEffects } from './app.effects';
+import { effects } from './store/effects';
 
 @NgModule({
   declarations: [
@@ -73,7 +73,7 @@ import { AppEffects } from './app.effects';
       }
     }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot(effects)
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
