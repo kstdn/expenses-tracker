@@ -33,6 +33,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { effects } from './store/effects';
 import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
 import { HamburgerIconComponent } from './components/shared/hamburger-icon/hamburger-icon.component';
+import { SidebarItemComponent } from './components/shared/sidebar-item/sidebar-item.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { HamburgerIconComponent } from './components/shared/hamburger-icon/hambu
     BalanceTileComponent,
     TimepointsComponent,
     SidebarComponent,
-    HamburgerIconComponent
+    HamburgerIconComponent,
+    SidebarItemComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent,

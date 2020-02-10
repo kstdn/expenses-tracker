@@ -1,0 +1,21 @@
+:host {
+    display: flex;
+    justify-content: flex-end;
+    margin: 24px 0;
+    cursor: pointer;
+}
+
+:host:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.text-container {
+    padding: 8px;
+}
+
+.icon-container {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

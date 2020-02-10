@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AutoUnsubscribe } from 'take-while-alive';
 import { DialogsService } from './services/dialogs.service';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faHome, faCalendarAlt, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,13 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.iconLibrary.addIcons(faChevronLeft, faChevronRight)
+    this.iconLibrary.addIcons(
+      faChevronLeft, 
+      faChevronRight,
+      faHome,
+      faCalendarAlt,
+      faQuestion
+    )
   }
 
   addMovement(): void {

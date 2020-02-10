@@ -1,2 +1,8 @@
-<et-hamburger-icon [showX]="open"></et-hamburger-icon>
-<ng-content></ng-content>
+<div (click)='toggle()' class="hamburger-icon-container">
+    <et-hamburger-icon [showX]="open"></et-hamburger-icon>
+</div>
+<div class="content">
+    <et-sidebar-item link='/home' text='Home' icon='home' [iconContainerWidth]='closedWidth'></et-sidebar-item>
+    <et-sidebar-item link='/timepoints' text='Timepoints' icon='calendar-alt' [iconContainerWidth]='closedWidth'></et-sidebar-item>
+    <et-sidebar-item link='/help' text='Help' icon='question' [iconContainerWidth]='closedWidth'></et-sidebar-item>
+</div>

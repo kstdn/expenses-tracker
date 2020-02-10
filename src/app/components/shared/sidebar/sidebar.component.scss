@@ -1,17 +1,20 @@
 @import 'vars';
 
 $closedWidth: 40px;
-$openWidth: 100px;
+$openWidth: 200px;
 $hamburgerIconWidth: 24px;
 $hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
 
 :host {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     height: 100%;
     position: relative;
     width: $closedWidth;
     background-color: $primary;
+    color: $primaryContrast;
+    font-size: 2rem;
     transition: width ease-out 0.2s;
 }
 
@@ -19,7 +22,14 @@ $hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
     width: $openWidth;
 }
 
-et-hamburger-icon {
-    margin: $hamburgerIconMargin; 
+.hamburger-icon-container {
+    width: $closedWidth;
     align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.content {
+    width: $openWidth;
 }
