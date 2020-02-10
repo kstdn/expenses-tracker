@@ -3,7 +3,6 @@ import { MoneyMovementGroups } from 'src/app/models/MoneyMovementGroup';
 import * as movementActions from './../actions/movement.actions'
 import { DateInterval } from 'src/app/components/shared/month-picker/DateInterval';
 import { startOfMonth, endOfMonth } from 'date-fns';
-import { SimpleMoney } from 'src/app/models/SimpleMoney';
 
 export const movementFeatureKey = 'movement';
 
