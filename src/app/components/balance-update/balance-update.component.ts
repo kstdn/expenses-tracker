@@ -11,7 +11,7 @@ import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
 
 @Component({
-  selector: 'app-balance-update',
+  selector: 'et-balance-update',
   templateUrl: './balance-update.component.html',
   styleUrls: ['./balance-update.component.scss']
 })

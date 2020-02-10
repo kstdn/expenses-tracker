@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MoneyMovementsComponent } from './components/views/money-movements/money-movements/money-movements.component';
-import { HelpComponent } from './components/views/help/help/help.component';
-import { TimepointsComponent } from './components/views/timepoints/timepoints.component';
+import { MoneyMovementsComponent } from './containers/money-movements/money-movements/money-movements.component';
+import { HelpComponent } from './containers/help/help/help.component';
 
 const routes: Routes = [
   {
     path: 'home', component: MoneyMovementsComponent,
   },
   {
-    path: 'timepoints', component: TimepointsComponent,
+    path: 'timepoints',
+    loadChildren: () => import('./modules/timepoints/timepoints.module').then(m => m.TimepointsModule),
   },
   {
     path: 'help', component: HelpComponent,

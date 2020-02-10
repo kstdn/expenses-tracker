@@ -6,9 +6,9 @@ import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/d
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MoneyMovementGroupComponent } from './components/views/money-movements/money-movement-group/money-movement-group.component';
-import { MoneyMovementComponent } from './components/views/money-movements/money-movement/money-movement.component';
-import { MoneyMovementsComponent } from './components/views/money-movements/money-movements/money-movements.component';
+import { MoneyMovementGroupComponent } from './containers/money-movements/money-movement-group/money-movement-group.component';
+import { MoneyMovementComponent } from './containers/money-movements/money-movement/money-movement.component';
+import { MoneyMovementsComponent } from './containers/money-movements/money-movements/money-movements.component';
 import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -19,12 +19,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AmountInputComponent } from './components/shared/amount-input/amount-input.component';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MonthPickerComponent } from './components/shared/month-picker/month-picker.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { HelpComponent } from './components/views/help/help/help.component';
+import { HelpComponent } from './containers/help/help/help.component';
 import { LoaderComponent } from './components/shared/loader/loader.component';
 import { BalanceUpdateComponent } from './components/balance-update/balance-update.component';
 import { BalanceTileComponent } from './components/balance-tile/balance-tile.component';
-import { TimepointsComponent } from './components/views/timepoints/timepoints.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './store/reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -34,6 +32,7 @@ import { effects } from './store/effects';
 import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
 import { HamburgerIconComponent } from './components/shared/hamburger-icon/hamburger-icon.component';
 import { SidebarItemComponent } from './components/shared/sidebar-item/sidebar-item.component';
+import { FontAwesomeModule } from './font-awesome.module';
 
 @NgModule({
   declarations: [
@@ -48,7 +47,6 @@ import { SidebarItemComponent } from './components/shared/sidebar-item/sidebar-i
     LoaderComponent,
     BalanceUpdateComponent,
     BalanceTileComponent,
-    TimepointsComponent,
     SidebarComponent,
     HamburgerIconComponent,
     SidebarItemComponent

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-timepoints',
   templateUrl: './timepoints.component.html',
   styleUrls: ['./timepoints.component.scss']
 })

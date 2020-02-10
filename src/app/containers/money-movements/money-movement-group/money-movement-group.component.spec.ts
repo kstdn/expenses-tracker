@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MoneyMovementRowComponent } from './money-movement-row.component';
+import { MoneyMovementGroupComponent } from './money-movement-group.component';
 
-describe('MoneyMovementRowComponent', () => {
-  let component: MoneyMovementRowComponent;
-  let fixture: ComponentFixture<MoneyMovementRowComponent>;
+describe('MoneyMovementGroupComponent', () => {
+  let component: MoneyMovementGroupComponent;
+  let fixture: ComponentFixture<MoneyMovementGroupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MoneyMovementRowComponent ]
+      declarations: [ MoneyMovementGroupComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MoneyMovementRowComponent);
+    fixture = TestBed.createComponent(MoneyMovementGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

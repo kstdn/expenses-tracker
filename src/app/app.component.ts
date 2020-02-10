@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AutoUnsubscribe } from 'take-while-alive';
 import { DialogsService } from './services/dialogs.service';
-import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faChevronLeft, faChevronRight, faHome, faCalendarAlt, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-root',
+  selector: 'et-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -13,19 +11,10 @@ import { faChevronLeft, faChevronRight, faHome, faCalendarAlt, faQuestion } from
 export class AppComponent implements OnInit {
 
   constructor(
-    private dialogsService: DialogsService,
-    private iconLibrary: FaIconLibrary
+    private dialogsService: DialogsService
   ) { }
 
-  ngOnInit() {
-    this.iconLibrary.addIcons(
-      faChevronLeft, 
-      faChevronRight,
-      faHome,
-      faCalendarAlt,
-      faQuestion
-    )
-  }
+  ngOnInit() { }
 
   addMovement(): void {
     this.dialogsService.openMovementCrud();
