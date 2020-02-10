@@ -17,17 +17,14 @@
     transition: all .2s ease-in-out;
 }
 
-.nav-icon:hover:before,
 .nav-icon.show-x:before {
     transform: translateY(8px) rotate(135deg);
 }
 
-.nav-icon:hover:after,
 .nav-icon.show-x:after {
     transform: translateY(-8px) rotate(-135deg);
 }
 
-.nav-icon:hover div,
 .nav-icon.show-x div {
     transform: scale(0);
 }

@@ -13,6 +13,9 @@
 @media (max-width: 768px) {
     :host {
         flex-direction: column;
+    }
+    
+    .main {
         height: calc(100% - 40px);
     }
 }
