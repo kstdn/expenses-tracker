@@ -6,12 +6,12 @@ import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/store';
 
 @Component({
-  selector: 'et-sidebar',
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  selector: 'et-toolbar',
+  templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.scss']
 })
 @AutoUnsubscribe()
-export class SidebarComponent implements OnInit {
+export class ToolbarComponent implements OnInit {
 
   readonly closedWidth = '40px';
   readonly openWidth = '200px';
@@ -24,7 +24,7 @@ export class SidebarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Close the sidebar when user clicks outside of it
+    // Close the toolbar when user clicks outside of it
     fromEvent(window, 'click')
       .pipe(
         takeWhileAlive(this),

@@ -29,9 +29,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { effects } from './store/effects';
-import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
+import { ToolbarComponent } from './components/shared/toolbar/toolbar.component';
 import { HamburgerIconComponent } from './components/shared/hamburger-icon/hamburger-icon.component';
-import { SidebarItemComponent } from './components/shared/sidebar-item/sidebar-item.component';
+import { ToolbarItemComponent } from './components/shared/toolbar-item/toolbar-item.component';
 import { FontAwesomeModule } from './font-awesome.module';
 
 @NgModule({
@@ -47,9 +47,9 @@ import { FontAwesomeModule } from './font-awesome.module';
     LoaderComponent,
     BalanceUpdateComponent,
     BalanceTileComponent,
-    SidebarComponent,
+    ToolbarComponent,
     HamburgerIconComponent,
-    SidebarItemComponent
+    ToolbarItemComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent,

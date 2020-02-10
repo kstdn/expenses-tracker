@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'et-sidebar-item',
-  templateUrl: './sidebar-item.component.html',
-  styleUrls: ['./sidebar-item.component.scss']
+  selector: 'et-toolbar-item',
+  templateUrl: './toolbar-item.component.html',
+  styleUrls: ['./toolbar-item.component.scss']
 })
-export class SidebarItemComponent implements OnInit {
+export class ToolbarItemComponent implements OnInit {
 
   @Input() link;
   @Input() text;
