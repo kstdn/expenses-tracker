@@ -10,6 +10,13 @@
     flex-direction: column;
 }
 
+@media (max-width: 768px) {
+    :host {
+        flex-direction: column;
+        height: calc(100% - 40px);
+    }
+}
+
 .summary {
     padding: 16px;
 }

@@ -1,9 +1,9 @@
 @import 'vars';
 
-$closedWidth: 40px;
+$closedSize: 40px;
 $openWidth: 200px;
 $hamburgerIconWidth: 24px;
-$hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
+$hamburgerIconMargin: calc(#{$closedSize - $hamburgerIconWidth}/2);
 
 :host {
     display: flex;
@@ -11,7 +11,7 @@ $hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
     align-items: flex-end;
     height: 100%;
     position: relative;
-    width: $closedWidth;
+    width: $closedSize;
     background-color: $primary;
     color: $primaryContrast;
     font-size: 2rem;
@@ -23,13 +23,42 @@ $hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
 }
 
 .hamburger-icon-container {
-    width: $closedWidth;
+    width: $closedSize;
     align-self: flex-end;
     display: flex;
     justify-content: center;
-    margin-top: 18px;
+    align-items: center;
+    min-height: 40px;
 }
 
 .content {
     width: $openWidth;
+    background-color: $primary;
+}
+
+@media (max-width: 768px) {
+    :host {
+        width: 100%;
+        height: $closedSize;
+    }
+
+    :host.open {
+        width: 100%;
+        height: unset;
+    }
+
+    .content {
+        position: absolute;
+        top: $closedSize;
+        width: 100%;
+        z-index: 1;
+        height: 0;
+        transition: height ease-out 0.1s;
+        overflow: hidden;
+    }
+
+    :host.open .content {
+        height: calc(100vh - #{$closedSize});
+    }
+
 }
