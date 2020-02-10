@@ -1,0 +1,25 @@
+@import 'vars';
+
+$closedWidth: 40px;
+$openWidth: 100px;
+$hamburgerIconWidth: 24px;
+$hamburgerIconMargin: calc(#{$closedWidth - $hamburgerIconWidth}/2);
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    width: $closedWidth;
+    background-color: $primary;
+    transition: width ease-out 0.2s;
+}
+
+:host.open {
+    width: $openWidth;
+}
+
+et-hamburger-icon {
+    margin: $hamburgerIconMargin; 
+    align-self: flex-end;
+}

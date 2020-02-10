@@ -1,6 +1,10 @@
 $primary: dodgerblue;
+$primaryContrast: white;
 
-$negative: #ed0c0c;
+$danger: #ed0c0c;
+$dangerContrast: white;
+
+$negative: $danger;
 $positive: #11d41b;
 
 $pillar-color:#e6e6e6;

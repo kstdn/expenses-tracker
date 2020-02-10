@@ -1,0 +1,32 @@
+@import 'vars';
+
+.nav-icon {
+    width: 24px;
+}
+
+.nav-icon:after, 
+.nav-icon:before, 
+.nav-icon div {
+    background-color: $primaryContrast;
+    border-radius: 3px;
+    content: '';
+    display: block;
+    height: 4px;
+    margin: 4px 0;
+    transition: all .2s ease-in-out;
+}
+
+.nav-icon:hover:before,
+.nav-icon.show-x:before {
+    transform: translateY(8px) rotate(135deg);
+}
+
+.nav-icon:hover:after,
+.nav-icon.show-x:after {
+    transform: translateY(-8px) rotate(-135deg);
+}
+
+.nav-icon:hover div,
+.nav-icon.show-x div {
+    transform: scale(0);
+}

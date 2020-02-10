@@ -31,6 +31,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { effects } from './store/effects';
+import { SidebarComponent } from './components/shared/sidebar/sidebar.component';
+import { HamburgerIconComponent } from './components/shared/hamburger-icon/hamburger-icon.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { effects } from './store/effects';
     LoaderComponent,
     BalanceUpdateComponent,
     BalanceTileComponent,
-    TimepointsComponent
+    TimepointsComponent,
+    SidebarComponent,
+    HamburgerIconComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent,
