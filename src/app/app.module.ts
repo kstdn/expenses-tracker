@@ -84,7 +84,12 @@ import { SidebarItemComponent } from './components/shared/sidebar-item/sidebar-i
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxHeight: '90vh' } },
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, 
+      useValue: { 
+        maxHeight: '90vh', 
+        hasBackdrop: true 
+      } 
+    },
   ],
   bootstrap: [AppComponent]
 })
