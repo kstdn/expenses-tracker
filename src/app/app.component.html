@@ -1,7 +1,7 @@
 <et-sidebar></et-sidebar>
 
 <div class="main">
-    <router-outlet></router-outlet>
+    <router-outlet (activate)='onRouterOutletActivate()'></router-outlet>
     <div class="btns summary">
         <div class="flex-divider"></div>
         <balance-tile></balance-tile>
