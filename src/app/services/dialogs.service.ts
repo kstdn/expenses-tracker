@@ -14,23 +14,15 @@ export class DialogsService {
   ) { }
 
   openMovementCrud(movement?: MoneyMovement) {
-    const dialogRef = this.dialog.open(MoneyMovementCrudComponent, {
+    this.dialog.open(MoneyMovementCrudComponent, {
       width: '450px',
       data: movement
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The movement crud dialog was closed');
     });
   }
 
   openBalanceUpdate() {
-    const dialogRef = this.dialog.open(BalanceUpdateComponent, {
+    this.dialog.open(BalanceUpdateComponent, {
       width: '450px'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The balance update dialog was closed');
     });
   }
 }
