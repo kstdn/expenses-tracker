@@ -3,16 +3,11 @@ import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MovementsService } from 'src/app/services/movements.service';
 import { finalize } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { SimpleMoney } from 'src/app/models/SimpleMoney';
 import { Money } from 'src/app/helpers/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Messages } from 'src/app/constants/Messages';
-
-interface MovementType {
-  id: number;
-  text: string;
-}
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   templateUrl: './money-movement-crud.component.html',
@@ -39,26 +34,31 @@ export class MoneyMovementCrudComponent implements OnInit {
   deleteButtonVisible = false;
   deleteConfirmationPromptVisible = false;
 
-  amount: number;
-  directionId: number = this.movementDirections[0].id;
-  typeId: number = this.movementTypes[0].id;
-  timestamp: Date = new Date();
-  description: string;
+  form: FormGroup;
 
   constructor(
     private movementsService: MovementsService,
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
+    public builder: FormBuilder,
     @Optional() @Inject(MAT_DIALOG_DATA) public movement: MoneyMovement
   ) { }
 
   ngOnInit() {
+    this.form = this.builder.group({
+      directionId: [this.movementDirections[0].id, Validators.required],
+      typeId: [this.movementTypes[0].id, Validators.required],
+      amount: [0, Validators.min(1)],
+      timestamp: [new Date(), Validators.required],
+      description: ''
+    })
+
     if (this.movement) {
-      this.amount = Math.abs(this.movement.money.amount);
-      this.timestamp = new Date(this.movement.timestamp);
-      this.typeId = this.movement.type;
-      this.directionId = Money(this.movement.money).isNegative() ? 0 : 1;
-      this.description = this.movement.description;
+      this.form.controls.amount.setValue(Math.abs(this.movement.money.amount));
+      this.form.controls.timestamp.setValue(new Date(this.movement.timestamp));
+      this.form.controls.typeId.setValue(this.movement.type);
+      this.form.controls.directionId.setValue(Money(this.movement.money).isNegative() ? 0 : 1);
+      this.form.controls.description.setValue(this.movement.description);
 
       this.deleteButtonVisible = true;
     }
@@ -73,27 +73,23 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 
   isNegative() {
-    return this.directionId === 0;
-  }
-
-  dateChange(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.timestamp = event.value;
+    return this.form.controls.directionId.value === 0;
   }
 
   onMoneyChanged(money: SimpleMoney): void {
-    this.amount = money && money.amount;
+    this.form.controls.amount.setValue(money && money.amount);
   }
 
   submit() {
     if (!this.movement) {
-      const movement: MoneyMovement = collectInputs(this);
+      const movement: MoneyMovement = collectInputs(this.form);
       this.movementsService.addMovement$(movement)
         .pipe(finalize(() => this.remove()))
         .subscribe();
     } else {
       const updatedMovement: MoneyMovement = {
         ...this.movement,
-        ...collectInputs(this)
+        ...collectInputs(this.form)
       }
       this.movementsService.updateMovement$(updatedMovement)
         .pipe(finalize(() => this.remove()))
@@ -119,13 +115,6 @@ export class MoneyMovementCrudComponent implements OnInit {
     this.deleteConfirmationPromptVisible = false;
   }
 
-  get submitIsActive() {
-    return this.typeId !== undefined 
-      && this.directionId !== undefined 
-      && !!this.timestamp 
-      && this.amount > 0;
-  }
-
   getInitialMoney() {
     return this.movement && this.movement.money;
   }
@@ -136,13 +125,14 @@ export class MoneyMovementCrudComponent implements OnInit {
 
 }
 
-const collectInputs = (component: MoneyMovementCrudComponent): MoneyMovement => {
-  const multiplier = component.isNegative() ? -1 : 1;
+const collectInputs = (form: FormGroup): MoneyMovement => {
+  const isNegative = form.controls.directionId.value === 0;
+  const multiplier = isNegative ? -1 : 1;
   
   return {
-    money: { amount: component.amount * multiplier, currency:'BGN', precision: 2 },
-    timestamp: component.timestamp.getTime(),
-    type: component.typeId,
-    description: component.description
+    money: { amount: form.controls.amount.value * multiplier, currency:'BGN', precision: 2 },
+    timestamp: form.controls.timestamp.value.getTime(),
+    type: form.controls.typeId.value,
+    description: form.controls.description.value
   }
 }

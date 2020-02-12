@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Precision } from 'src/app/helpers/Constants';
 import { SimpleMoney } from 'src/app/models/SimpleMoney';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'amount-input',
@@ -11,9 +12,28 @@ export class AmountInputComponent {
 
   @Input() initialMoney: Partial<SimpleMoney>;
   @Output() moneyChanged = new EventEmitter<SimpleMoney>();
+  
+  form: FormGroup;
 
   amountWholePart: number = 0;
   amountDecimalPart: number = 0;
+
+  ngOnInit() {
+    this.form = new FormGroup({
+      'amountWholePart': new FormControl(this.amountWholePart),
+      'amountDecimalPart': new FormControl(this.amountDecimalPart)
+    })
+
+    this.form.controls.amountWholePart.valueChanges
+      .subscribe(value => {
+        this.amountWholePartChanged(value);
+      });
+
+    this.form.controls.amountDecimalPart.valueChanges
+      .subscribe(value => {
+        this.amountDecimalPartChanged(value);
+      });
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.initialMoney && changes.initialMoney.isFirstChange) {
@@ -24,13 +44,13 @@ export class AmountInputComponent {
     }
   }
 
-  amountWholePartChanged($event: number): void {
-    this.amountWholePart = $event;
+  amountWholePartChanged(value: number): void {
+    this.amountWholePart = value;
     this.processInputChange();
   }
 
-  amountDecimalPartChanged($event: number): void {
-    this.amountDecimalPart = $event;
+  amountDecimalPartChanged(value: number): void {
+    this.amountDecimalPart = value;
     this.processInputChange();
   }
 
@@ -50,8 +70,8 @@ export class AmountInputComponent {
   }
 
   isValid() {
-    return this.amountDecimalPart < 100 
-    && this.amountDecimalPart >= 0;
+    return this.amountDecimalPart < 100
+      && this.amountDecimalPart >= 0;
   }
 
   onFocus($event: FocusEvent) {

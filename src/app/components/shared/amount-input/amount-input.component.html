@@ -1,8 +1,10 @@
-<mat-form-field class="amount-whole-part">
-    <mat-label>Amount</mat-label>
-    <input matInput type="number" [ngModel]="amountWholePart" (ngModelChange)="amountWholePartChanged($event)" (focus)='onFocus($event)'>
-</mat-form-field>
-<span>.</span>
-<mat-form-field class="amount-decimal-part">
-    <input matInput type="number" [ngModel]="amountDecimalPart" (ngModelChange)="amountDecimalPartChanged($event)">
-</mat-form-field>
+<ng-container [formGroup]='form'>
+    <mat-form-field class="amount-whole-part">
+        <mat-label>Amount</mat-label>
+        <input matInput formControlName='amountWholePart' type="number" (focus)='onFocus($event)'>
+    </mat-form-field>
+    <span>.</span>
+    <mat-form-field class="amount-decimal-part">
+        <input matInput formControlName='amountDecimalPart' type="number">
+    </mat-form-field>
+</ng-container>

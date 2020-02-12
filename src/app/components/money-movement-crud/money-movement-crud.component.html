@@ -2,43 +2,48 @@
     {{ getMode() }} money movement
 </div>
 <div class="dialog-body">
-    <mat-form-field class="single-line">
-        <mat-label>Movement direction</mat-label>
-        <mat-select [(value)]="directionId">
-            <mat-option *ngFor="let movementDirection of movementDirections" [value]="movementDirection.id">
-                {{ movementDirection.text }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field class="single-line">
-        <mat-label>Movement type</mat-label>
-        <mat-select [(value)]="typeId">
-            <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.id">
-                {{ movementType.text }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <div class="amount-row">
-        <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)"></amount-input>
-    </div>
-    <mat-form-field class="single-line">
-        <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="Choose a date" (dateChange)="dateChange('change', $event)"
-            [value]="timestamp">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker disabled="false"></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field class="single-line">
-        <mat-label>Description</mat-label>
-        <input matInput type="text" [(ngModel)]="description">
-    </mat-form-field>
+    <form [formGroup]='form'>
+        <mat-form-field class="single-line">
+            <mat-label>Movement direction</mat-label>
+            <mat-select formControlName='directionId'>
+                <mat-option *ngFor="let movementDirection of movementDirections" [value]="movementDirection.id">
+                    {{ movementDirection.text }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="single-line">
+            <mat-label>Movement type</mat-label>
+            <mat-select formControlName='typeId'>
+                <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.id">
+                    {{ movementType.text }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="amount-row">
+            <amount-input [initialMoney]="getInitialMoney()" (moneyChanged)="onMoneyChanged($event)"></amount-input>
+        </div>
+
+        <mat-form-field class="single-line">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName='timestamp'>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker disabled="false"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="single-line">
+            <mat-label>Description</mat-label>
+            <input matInput type="text" formControlName='description'>
+        </mat-form-field> 
+    </form>
 </div>
 <div class="dialog-footer">
     <div class="btns" *ngIf="!deleteConfirmationPromptVisible">
         <button class="btn neutral" *ngIf="deleteButtonVisible" (click)="showDeleteConfirmationPrompt()">Delete</button>
         <div class="flex-divider"></div>
         <button class="btn neutral" (click)="remove()">Close</button>
-        <button class="btn primary" (click)="submit()" [disabled]="!submitIsActive">Submit</button>
+        <button class="btn primary" (click)="submit()" [disabled]="form.invalid">Submit</button>
     </div>
     <div class="btns" *ngIf="deleteConfirmationPromptVisible">
         <span class="delete-confirmation-prompt-text">

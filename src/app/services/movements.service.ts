@@ -6,6 +6,8 @@ import { map, tap } from 'rxjs/operators';
 import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
 import { addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval, formatMoney } from '../helpers/util';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
+import * as fromStore from './../store';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +24,12 @@ export class MovementsService {
   movementGroups: MoneyMovementGroups;
 
   constructor(
-    private serverService: ServerService
-  ) { }
+    private serverService: ServerService,
+    private store: Store<fromStore.State>
+  ) {
+    store.select(fromStore.selectMoneyMovementInterval)
+      .subscribe(value => this.interval = value);
+  }
 
   setDateInterval(interval: DateInterval) {
     this.interval = interval;
@@ -42,7 +48,7 @@ export class MovementsService {
   addMovement$(movement: MoneyMovement) {
     return this.serverService.addMovement(movement)
       .pipe(tap(movement => {
-        if(isInInterval(movement, this.interval)) {
+        if (isInInterval(movement, this.interval)) {
           addToExistingGroupOrCreate(this.movementGroups, this.groupBy, movement)
         }
         this.changes$.next();
@@ -52,7 +58,7 @@ export class MovementsService {
   updateMovement$(movement: MoneyMovement) {
     return this.serverService.updateMovement(movement)
       .pipe(tap(updatedMovement => {
-        if(isInInterval(updatedMovement, this.interval)) {
+        if (isInInterval(updatedMovement, this.interval)) {
           updateInGroup(this.movementGroups, this.groupBy, updatedMovement, this.interval)
         } else {
           removeFromGroup(this.movementGroups, this.groupBy, updatedMovement)
@@ -63,7 +69,7 @@ export class MovementsService {
 
   deleteMovement$(movement: MoneyMovement): Observable<void> {
     return this.serverService.deleteMovement(movement.id)
-      .pipe(tap(() => { 
+      .pipe(tap(() => {
         removeFromGroup(this.movementGroups, this.groupBy, movement);
         this.changes$.next();
       }));

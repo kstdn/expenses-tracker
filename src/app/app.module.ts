@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -64,7 +64,7 @@ import { FontAwesomeModule } from './font-awesome.module';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatDialogModule,
     MatSnackBarModule,
