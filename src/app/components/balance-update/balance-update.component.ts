@@ -9,6 +9,9 @@ import { finalize, tap } from 'rxjs/operators';
 import { Currency } from 'dinero.js';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
+import { Store } from '@ngrx/store';
+import * as fromStore from 'src/app/store';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'et-balance-update',
@@ -29,8 +32,9 @@ export class BalanceUpdateComponent implements OnInit {
 
   constructor(
     private serverService: ServerService,
-    private movementsService: MovementsService,
-    public dialogRef: MatDialogRef<BalanceUpdateComponent>
+    public dialogRef: MatDialogRef<BalanceUpdateComponent>,
+    private store: Store<fromStore.State>,
+    private actions$: Actions
   ) { }
 
   ngOnInit() {
@@ -44,6 +48,13 @@ export class BalanceUpdateComponent implements OnInit {
         this.currentBalance = balance;
         this.currentBalanceFormatted = formatMoney(balance);
       })
+
+    this.actions$.pipe(
+      ofType(fromStore.addMovementSuccess),
+      takeWhileAlive(this),
+      tap(_ => this.remove())
+    )
+      .subscribe();
   }
 
   getInitialMoney() {
@@ -52,8 +63,8 @@ export class BalanceUpdateComponent implements OnInit {
 
   onMoneyChanged(money: SimpleMoney): void {
     const diff = Money(money).subtract(Money(this.currentBalance));
-    
-    if(diff.isZero()) {
+
+    if (diff.isZero()) {
       this.unsetDiff();
     } else {
       this.setDiff(diff);
@@ -73,12 +84,8 @@ export class BalanceUpdateComponent implements OnInit {
     }
 
     this.loading = true;
-    this.movementsService.addMovement$(movement)
-    .pipe(
-      takeWhileAlive(this),
-      tap(() => this.remove())
-    )
-    .subscribe();
+
+    this.store.dispatch(fromStore.addMovement({ data: movement }));
   }
 
   setDiff(diff) {

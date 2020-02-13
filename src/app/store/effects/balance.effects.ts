@@ -15,7 +15,7 @@ export class BalanceEffects {
     $loadMovementGroupsSuccess = createEffect(() =>
         this.actions$
             .pipe(
-                ofType(movementActions.loadMovementGroupsSuccess),
+                ofType(movementActions.loadMovementsSuccess),
                 map(() => balanceActions.loadBalance())));
 
     $loadBalance = createEffect(() =>

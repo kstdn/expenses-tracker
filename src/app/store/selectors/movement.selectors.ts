@@ -8,9 +8,9 @@ export const selectMoneyMovementInterval = createSelector(
     state => state.interval
 );
 
-export const selectMoneyMovementGroups = createSelector(
+export const selectMoneyMovements = createSelector(
     selectMoneyMovement,
-    state => state.moneyMovementGroups
+    state => state.moneyMovements
 );
 
 export const selectMoneyMovementGroupsLoading = createSelector(

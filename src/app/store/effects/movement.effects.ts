@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as movementActions from '../actions/movement.actions';
 import { switchMap, map } from 'rxjs/operators';
 import { ServerService } from 'src/app/services/server.service';
-import { groupMovementsBy } from 'src/app/helpers/util';
 
 @Injectable()
 export class MovementEffects {
@@ -17,7 +16,7 @@ export class MovementEffects {
             .pipe(
                 ofType(movementActions.setMovementsInterval),
                 map(interval => {
-                    return movementActions.loadMovementGroups(interval);
+                    return movementActions.loadMovements(interval);
                 })
             )
     );
@@ -25,13 +24,23 @@ export class MovementEffects {
     $loadMovements = createEffect(() =>
         this.actions$
             .pipe(
-                ofType(movementActions.loadMovementGroups),
+                ofType(movementActions.loadMovements),
                 switchMap(({ data: interval }) =>
                     this.serverService.getAllMovements(interval)
                         .pipe(
-                            map(data => groupMovementsBy(data, 'timestamp')),
-                            map(movements => movementActions.loadMovementGroupsSuccess({
+                            map(movements => movementActions.loadMovementsSuccess({
                                 data: movements
+                            }))))));
+
+    $addMovement = createEffect(() =>
+        this.actions$
+            .pipe(
+                ofType(movementActions.addMovement),
+                switchMap(({ data: movement }) =>
+                    this.serverService.addMovement(movement)
+                        .pipe(
+                            map(movement => movementActions.addMovementSuccess({
+                                data: movement
                             }))))));
 
 }

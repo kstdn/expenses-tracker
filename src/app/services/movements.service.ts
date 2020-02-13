@@ -45,14 +45,8 @@ export class MovementsService {
     return this.serverService.getAllMovements(interval);
   }
 
-  addMovement$(movement: MoneyMovement) {
-    return this.serverService.addMovement(movement)
-      .pipe(tap(movement => {
-        if (isInInterval(movement, this.interval)) {
-          addToExistingGroupOrCreate(this.movementGroups, this.groupBy, movement)
-        }
-        this.changes$.next();
-      }));
+  addMovement(movement: MoneyMovement) {
+    this.store.dispatch(fromStore.addMovement({ data: movement }))
   }
 
   updateMovement$(movement: MoneyMovement) {

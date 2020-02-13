@@ -1,18 +1,23 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MovementsService } from 'src/app/services/movements.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SimpleMoney } from 'src/app/models/SimpleMoney';
 import { Money } from 'src/app/helpers/util';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Messages } from 'src/app/constants/Messages';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Actions, ofType } from '@ngrx/effects';
+import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
+import * as fromStore from 'src/app/store';
+
 
 @Component({
   templateUrl: './money-movement-crud.component.html',
   styleUrls: ['./money-movement-crud.component.scss']
 })
+@AutoUnsubscribe()
 export class MoneyMovementCrudComponent implements OnInit {
 
   movementDirections = [{
@@ -41,6 +46,7 @@ export class MoneyMovementCrudComponent implements OnInit {
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
     public builder: FormBuilder,
+    private actions$: Actions,
     @Optional() @Inject(MAT_DIALOG_DATA) public movement: MoneyMovement
   ) { }
 
@@ -62,6 +68,12 @@ export class MoneyMovementCrudComponent implements OnInit {
 
       this.deleteButtonVisible = true;
     }
+
+    this.actions$.pipe(
+      takeWhileAlive(this),
+      ofType(fromStore.addMovementSuccess),
+      tap(() => this.remove())
+    ).subscribe();
   }
 
   getMode() {
@@ -83,9 +95,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   submit() {
     if (!this.movement) {
       const movement: MoneyMovement = collectInputs(this.form);
-      this.movementsService.addMovement$(movement)
-        .pipe(finalize(() => this.remove()))
-        .subscribe();
+      this.movementsService.addMovement(movement);
     } else {
       const updatedMovement: MoneyMovement = {
         ...this.movement,

@@ -1,14 +1,15 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { MoneyMovementGroups } from 'src/app/models/MoneyMovementGroup';
 import * as movementActions from './../actions/movement.actions'
 import { DateInterval } from 'src/app/components/shared/month-picker/DateInterval';
 import { startOfMonth, endOfMonth } from 'date-fns';
+import { isInInterval } from 'src/app/helpers/util';
+import { MoneyMovement } from 'src/app/models/MoneyMovement';
 
 export const movementFeatureKey = 'movement';
 
 export interface MoneyMovementState {
   interval: DateInterval,
-  moneyMovementGroups: MoneyMovementGroups,
+  moneyMovements: MoneyMovement[],
   loading: boolean,
   loaded: boolean
 }
@@ -18,7 +19,7 @@ export const initialState: MoneyMovementState = {
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date())
   },
-  moneyMovementGroups: {},
+  moneyMovements: [],
   loading: false,
   loaded: false
 };
@@ -31,25 +32,38 @@ const movementReducer = createReducer(
       interval: action.data
     };
   }),
-  on(movementActions.loadMovementGroups, (state, action) => {
+  on(movementActions.loadMovements, (state, action) => {
     return {
       ...state,
       loaded: false,
       loading: true,
     };
   }),
-  on(movementActions.loadMovementGroupsSuccess, (state, action) => {
+  on(movementActions.loadMovementsSuccess, (state, action) => {
     return {
       ...state,
-      moneyMovementGroups: action.data,
+      moneyMovements: action.data,
       loaded: true,
       loading: false,
     };
   }),
+  on(movementActions.addMovementSuccess, (state, action) => {
+    const movement = action.data;
+    const interval = state.interval;
+
+    if (isInInterval(movement, interval)) {
+      return {
+        ...state,
+        moneyMovements: [movement, ...state.moneyMovements]
+      };
+    }
+    
+    return state;
+  }),
   on(movementActions.cleanUpMovementGroups, (state, action) => {
     return {
       ...state,
-      moneyMovementGroups: {}
+      moneyMovements: []
     };
   })
 );

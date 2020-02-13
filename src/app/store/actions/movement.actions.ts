@@ -1,24 +1,39 @@
 import { createAction, props } from '@ngrx/store';
-import { MoneyMovementGroups } from 'src/app/models/MoneyMovementGroup';
 import { DateInterval } from 'src/app/components/shared/month-picker/DateInterval';
+import { MoneyMovement } from 'src/app/models/MoneyMovement';
 
 export const setMovementsInterval = createAction(
   '[Movement] Set Movements Interval',
   props<{ data: DateInterval }>()
 );
 
-export const loadMovementGroups = createAction(
-  '[Movement] Load Movement Groups',
+export const loadMovements = createAction(
+  '[Movement] Load Movements',
   props<{ data: DateInterval }>()
 );
 
-export const loadMovementGroupsSuccess = createAction(
-  '[Movement] Load Movement Groups Success',
-  props<{ data: MoneyMovementGroups }>()
+export const loadMovementsSuccess = createAction(
+  '[Movement] Load Movements Success',
+  props<{ data: MoneyMovement[] }>()
 );
 
-export const loadMovementGroupsFailure = createAction(
-  '[Movement] Load Movement Groups Failure',
+export const loadMovementsFailure = createAction(
+  '[Movement] Load Movements Failure',
+  props<{ error: any }>()
+);
+
+export const addMovement = createAction(
+  '[Movement] Add Movement',
+  props<{ data: MoneyMovement }>()
+);
+
+export const addMovementSuccess = createAction(
+  '[Movement] Add Movement Success',
+  props<{ data: MoneyMovement }>()
+);
+
+export const addMovementFailure = createAction(
+  '[Movement] Add Movement Failure',
   props<{ error: any }>()
 );
 

@@ -3,8 +3,8 @@ import { AutoUnsubscribe } from 'take-while-alive';
 import { DateInterval } from '../../../components/shared/month-picker/DateInterval';
 import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/store';
-import { tap } from 'rxjs/operators';
-import { hasOnlyOneGroup } from 'src/app/helpers/util';
+import { tap, map } from 'rxjs/operators';
+import { hasOnlyOneGroup, groupMovementsBy } from 'src/app/helpers/util';
 
 @Component({
   templateUrl: './money-movements.component.html',
@@ -17,8 +17,10 @@ export class MoneyMovementsComponent implements OnInit {
 
   loading$ = this.store.select(fromStore.selectMoneyMovementGroupsLoading);
   loaded$ = this.store.select(fromStore.selectMoneyMovementGroupsLoaded);
-  moneyMovementGroups$ = this.store.select(fromStore.selectMoneyMovementGroups)
-    .pipe(tap(() => {
+  moneyMovementGroups$ = this.store.select(fromStore.selectMoneyMovements)
+    .pipe(
+    map(data => groupMovementsBy(data, 'timestamp')),
+    tap(() => {
       setTimeout(() => {
         this.elementRef.nativeElement.scrollTop = this.elementRef.nativeElement.scrollHeight;
       })

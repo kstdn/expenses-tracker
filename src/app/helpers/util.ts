@@ -40,23 +40,16 @@ export const hasOnlyOneGroup = (moneyMovementGroups: MoneyMovementGroups) => {
     return Object.keys(moneyMovementGroups).length === 1;
 }
 
-export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement, movementIndex?: number) => {
+export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement) => {
     const key = getGroupBy(movement, groupBy);
     let moneyMovementGroup = moneyMovementGroups[key];
 
     if (moneyMovementGroup) {
         // Update the group
-        let moneyMovements;
-        if (movementIndex !== undefined) {
-            moneyMovementGroup.moneyMovements.splice(movementIndex, 0, movement);
-            moneyMovements = moneyMovementGroup.moneyMovements;
-        } else {
-            moneyMovements = [
-                ...moneyMovementGroup.moneyMovements,
-                movement
-            ]
-        }
-        moneyMovementGroup = { moneyMovements }
+        moneyMovementGroup = { moneyMovements: [
+            ...moneyMovementGroup.moneyMovements,
+            movement
+        ]}
     } else {
         // Create new group
         moneyMovementGroup = { moneyMovements: [movement] };
@@ -64,6 +57,8 @@ export const addToExistingGroupOrCreate = (moneyMovementGroups: MoneyMovementGro
 
     // Add to groups object
     moneyMovementGroups[key] = moneyMovementGroup;
+
+    return moneyMovementGroups;
 }
 
 export const updateInGroup = (movementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, updatedMovement: MoneyMovement, interval: DateInterval) => {
@@ -81,7 +76,7 @@ export const updateInGroup = (movementGroups: MoneyMovementGroups, groupBy: keyo
     }
 
     const movementIndex = removeFromGroup(movementGroups, groupBy, movement);
-    addToExistingGroupOrCreate(movementGroups, groupBy, updatedMovement, movementIndex);
+    addToExistingGroupOrCreate(movementGroups, groupBy, updatedMovement);
 }
 
 export const removeFromGroup = (movementGroups: MoneyMovementGroups, groupBy: keyof MoneyMovement, movement: MoneyMovement): number => {
