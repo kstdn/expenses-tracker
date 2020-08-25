@@ -10,7 +10,7 @@ import { MoneyMovementGroupComponent } from './containers/money-movements/money-
 import { MoneyMovementComponent } from './containers/money-movements/money-movement/money-movement.component';
 import { MoneyMovementsComponent } from './containers/money-movements/money-movements/money-movements.component';
 import { MoneyMovementCrudComponent } from './components/money-movement-crud/money-movement-crud.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -33,6 +33,10 @@ import { ToolbarComponent } from './components/shared/toolbar/toolbar.component'
 import { HamburgerIconComponent } from './components/shared/hamburger-icon/hamburger-icon.component';
 import { ToolbarItemComponent } from './components/shared/toolbar-item/toolbar-item.component';
 import { FontAwesomeModule } from './font-awesome.module';
+import { ExtractDataInterceptor } from './interceptors/extract-data.interceptor';
+import { DateInterceptor } from './interceptors/date.interceptor';
+import { LoginComponent } from './containers/login/login.component';
+import { CookiesInterceptor } from './interceptors/cookies.interceptor';
 
 @NgModule({
   declarations: [
@@ -49,7 +53,8 @@ import { FontAwesomeModule } from './font-awesome.module';
     BalanceTileComponent,
     ToolbarComponent,
     HamburgerIconComponent,
-    ToolbarItemComponent
+    ToolbarItemComponent,
+    LoginComponent
   ],
   entryComponents: [
     MoneyMovementCrudComponent,
@@ -70,7 +75,7 @@ import { FontAwesomeModule } from './font-awesome.module';
     MatSnackBarModule,
     FontAwesomeModule,
     StoreModule.forRoot(reducers, {
-      metaReducers, 
+      metaReducers,
       runtimeChecks: {
         strictStateImmutability: true,
         strictActionImmutability: true,
@@ -80,13 +85,16 @@ import { FontAwesomeModule } from './font-awesome.module';
     EffectsModule.forRoot(effects)
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ExtractDataInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CookiesInterceptor, multi: true },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
-    { provide: MAT_DIALOG_DEFAULT_OPTIONS, 
-      useValue: { 
-        maxHeight: '90vh', 
-        hasBackdrop: true 
-      } 
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        maxHeight: '90vh',
+        hasBackdrop: true
+      }
     },
   ],
   bootstrap: [AppComponent]

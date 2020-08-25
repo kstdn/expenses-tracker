@@ -78,7 +78,7 @@ export class BalanceUpdateComponent implements OnInit {
   submit() {
     const movement: MoneyMovement = {
       money: this.newMovement,
-      timestamp: new Date().getTime(),
+      timestamp: new Date(),
       type: MoneyMovementType.Immediate,
       description: ''
     }

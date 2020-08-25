@@ -8,7 +8,7 @@ export const Money = (simpleDinero: SimpleMoney) => {
     return Dinero(simpleDinero);
 };
 
-export const getDate = (timestamp: number): string => {
+export const getDate = (timestamp: Date): string => {
     const temp = new Date(timestamp);
     temp.setHours(0, 0, 0, 0);
     return `${temp.getTime()}`;
@@ -96,7 +96,7 @@ export const removeFromGroup = (movementGroups: MoneyMovementGroups, groupBy: ke
 }
 
 export const isInInterval = (movement: MoneyMovement, interval: DateInterval) => {
-    return movement.timestamp >= interval.from.getTime() && movement.timestamp <= interval.to.getTime();
+    return movement.timestamp >= interval.from && movement.timestamp <= interval.to;
 }
 
 export const formatMoney = (simpleMoney: SimpleMoney) => Money(simpleMoney).toFormat('0.00') + 'BGN'

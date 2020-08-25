@@ -1,0 +1,14 @@
+<form [formGroup]="form" (ngSubmit)="onFormSubmit($event)">
+    <mat-form-field class="single-line">
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName='username'>
+    </mat-form-field>
+    <mat-form-field class="single-line">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName='password'>
+  </mat-form-field>
+  <div class="btns">
+      <div class="flex-divider"></div>
+      <button class="btn primary" type="submit" [disabled]="form.invalid">Submit</button>
+  </div>
+</form>

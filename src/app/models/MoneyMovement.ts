@@ -4,7 +4,7 @@ import { SimpleMoney } from './SimpleMoney';
 export interface MoneyMovement {
     id?: string;
     money: SimpleMoney;
-    timestamp: number;
+    timestamp: Date;
     type: MoneyMovementType;
     description? : string;
 }

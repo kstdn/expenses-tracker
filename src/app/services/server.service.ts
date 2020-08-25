@@ -4,43 +4,51 @@ import { Observable } from 'rxjs';
 import { MoneyMovement } from '../models/MoneyMovement';
 import { SimpleMoney } from '../models/SimpleMoney';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
+import { Paginated } from '../models/Paginated';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServerService {
 
-  baseUrl: string = 'http://localhost:3000/';
+  baseUrl: string = 'http://localhost:4000/';
 
   constructor(private http: HttpClient) { }
 
-  getAllMovements(interval: DateInterval): Observable<MoneyMovement[]> {
-    return this.http.get<MoneyMovement[]>(this.baseUrl + 'expenses', {
+  login(username: string, password: string): Observable<void> {
+    return this.http.post<void>(this.baseUrl + 'authentication/login', {
+        username,
+        password,
+    });
+  }
+
+  getAllMovements(interval: DateInterval): Observable<Paginated<MoneyMovement>> {
+    return this.http.get<Paginated<MoneyMovement>>(this.baseUrl + 'money-movements', {
       params: {
-        from: `${interval.from.getTime()}`,
-        to: `${interval.to.getTime()}`
+        from: `${interval.from.toISOString()}`,
+        to: `${interval.to.toISOString()}`
       }
     });
   }
 
   addMovement(movement: MoneyMovement): Observable<MoneyMovement> {
-    return this.http.post<MoneyMovement>(this.baseUrl + 'expenses', movement);
+    return this.http.post<MoneyMovement>(this.baseUrl + 'money-movements', movement);
   }
 
   updateMovement(movement: MoneyMovement): Observable<MoneyMovement> {
-    return this.http.put<MoneyMovement>(this.baseUrl + 'expenses', movement);
+    return this.http.put<MoneyMovement>(this.baseUrl + 'money-movements', movement);
   }
-  
+
   deleteMovement(id: string): Observable<void> {
-    return this.http.delete<void>(this.baseUrl + 'expenses/' + id);
+    return this.http.delete<void>(this.baseUrl + 'money-movements/' + id);
   }
 
   getCurrentBalance(): Observable<SimpleMoney> {
-    return this.http.get<SimpleMoney>(this.baseUrl + 'expenses/balance');
+    return this.http.get<SimpleMoney>(this.baseUrl + 'money-movements/balance');
   }
 
   getAccumulatedCurrentBalance(): Observable<SimpleMoney> {
-    return this.http.get<SimpleMoney>(this.baseUrl + 'expenses/balance-accumulated');
+    return this.http.get<SimpleMoney>(this.baseUrl + 'money-movements/balance-accumulated');
   }
 
 }

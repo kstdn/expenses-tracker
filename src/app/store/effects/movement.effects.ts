@@ -29,7 +29,7 @@ export class MovementEffects {
                     this.serverService.getAllMovements(interval)
                         .pipe(
                             map(movements => movementActions.loadMovementsSuccess({
-                                data: movements
+                                data: movements.items
                             }))))));
 
     $addMovement = createEffect(() =>

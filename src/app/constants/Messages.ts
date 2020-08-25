@@ -1,3 +1,4 @@
 export const Messages = {
-    Deleted: 'Deleted'
+    Deleted: 'Deleted',
+    GeneralError: 'There has been an error'
 }
