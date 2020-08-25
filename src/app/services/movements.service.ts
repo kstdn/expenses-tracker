@@ -41,10 +41,6 @@ export class MovementsService {
     this.changes$.next();
   }
 
-  private getAllMovements$(interval: DateInterval): Observable<MoneyMovement[]> {
-    return this.serverService.getAllMovements(interval);
-  }
-
   addMovement(movement: MoneyMovement) {
     this.store.dispatch(fromStore.addMovement({ data: movement }))
   }
