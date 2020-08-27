@@ -14,7 +14,11 @@ export class DateInterceptor implements HttpInterceptor {
 
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    return next.handle(req).pipe(
+    const clonedReq = req.clone({
+      body: this.convertToDate(req.body)
+    });
+
+    return next.handle(clonedReq).pipe(
           tap((event: HttpEvent<any>) => {
               if (event instanceof HttpResponse) {
                   const body = event.body;
