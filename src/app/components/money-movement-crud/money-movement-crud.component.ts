@@ -12,7 +12,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
 import * as fromStore from 'src/app/store';
 
-
 @Component({
   templateUrl: './money-movement-crud.component.html',
   styleUrls: ['./money-movement-crud.component.scss']
@@ -29,10 +28,8 @@ export class MoneyMovementCrudComponent implements OnInit {
   }];
 
   movementTypes = [{
-    id: 0,
     text: 'Immediate'
   }, {
-    id: 1,
     text: 'Planned'
   }];
 
@@ -53,7 +50,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   ngOnInit() {
     this.form = this.builder.group({
       directionId: [this.movementDirections[0].id, Validators.required],
-      typeId: [this.movementTypes[0].id, Validators.required],
+      typeId: [this.movementTypes[0].text, Validators.required],
       amount: [0, Validators.min(1)],
       timestamp: [new Date(), Validators.required],
       description: ''
@@ -110,7 +107,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   submitDelete() {
     this.movementsService.deleteMovement$(this.movement)
       .subscribe({
-        next: () => { 
+        next: () => {
           this.snackBar.open(Messages.Deleted)
           this.remove()
         }
@@ -138,10 +135,10 @@ export class MoneyMovementCrudComponent implements OnInit {
 const collectInputs = (form: FormGroup): MoneyMovement => {
   const isNegative = form.controls.directionId.value === 0;
   const multiplier = isNegative ? -1 : 1;
-  
+
   return {
     money: { amount: form.controls.amount.value * multiplier, currency:'BGN', precision: 2 },
-    timestamp: form.controls.timestamp.value.getTime(),
+    timestamp: form.controls.timestamp.value,
     type: form.controls.typeId.value,
     description: form.controls.description.value
   }

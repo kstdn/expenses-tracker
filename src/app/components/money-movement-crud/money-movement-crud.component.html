@@ -15,7 +15,7 @@
         <mat-form-field class="single-line">
             <mat-label>Movement type</mat-label>
             <mat-select formControlName='typeId'>
-                <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.id">
+                <mat-option *ngFor="let movementType of movementTypes" [value]="movementType.text">
                     {{ movementType.text }}
                 </mat-option>
             </mat-select>
@@ -35,7 +35,7 @@
         <mat-form-field class="single-line">
             <mat-label>Description</mat-label>
             <input matInput type="text" formControlName='description'>
-        </mat-form-field> 
+        </mat-form-field>
     </form>
 </div>
 <div class="dialog-footer">
