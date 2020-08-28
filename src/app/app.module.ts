@@ -37,6 +37,7 @@ import { ExtractDataInterceptor } from './interceptors/extract-data.interceptor'
 import { DateInterceptor } from './interceptors/date.interceptor';
 import { LoginComponent } from './containers/login/login.component';
 import { CookiesInterceptor } from './interceptors/cookies.interceptor';
+import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { CookiesInterceptor } from './interceptors/cookies.interceptor';
     EffectsModule.forRoot(effects)
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: RefreshTokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ExtractDataInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CookiesInterceptor, multi: true },

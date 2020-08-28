@@ -22,6 +22,10 @@ export class ServerService {
     });
   }
 
+  refreshToken(): Observable<void> {
+    return this.http.post<void>(this.baseUrl + 'authentication/refresh-token', {});
+  }
+
   getAllMovements(interval: DateInterval): Observable<Paginated<MoneyMovement>> {
     return this.http.get<Paginated<MoneyMovement>>(this.baseUrl + 'money-movements', {
       params: {
