@@ -1,48 +1,78 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { AutoUnsubscribe } from 'take-while-alive';
-import { DateInterval } from '../../../components/shared/month-picker/DateInterval';
-import { Store } from '@ngrx/store';
-import * as fromStore from 'src/app/store';
-import { tap, map } from 'rxjs/operators';
-import { hasOnlyOneGroup, groupMovementsBy } from 'src/app/helpers/util';
+import { Component, ElementRef, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { tap } from "rxjs/operators";
+import { hasOnlyOneGroup } from "src/app/helpers/util";
+import { LoadingStatus } from "src/app/models/EntityStatus";
+import { DialogsService } from "src/app/services/dialogs.service";
+import { MovementsService } from "src/app/services/movements.service";
+import * as fromStore from "src/app/store";
+import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
+import { DateInterval } from "../../../components/shared/month-picker/DateInterval";
 
 @Component({
-  templateUrl: './money-movements.component.html',
-  styleUrls: ['./money-movements.component.scss']
+  templateUrl: "./money-movements.component.html",
+  styleUrls: ["./money-movements.component.scss"],
 })
 @AutoUnsubscribe()
 export class MoneyMovementsComponent implements OnInit {
+  get state() {
+    return this.movementsService.state;
+  }
 
-  error: boolean = false;
+  get isLoading() {
+    return this.state.status === LoadingStatus.Loading;
+  }
 
-  loading$ = this.store.select(fromStore.selectMoneyMovementGroupsLoading);
-  loaded$ = this.store.select(fromStore.selectMoneyMovementGroupsLoaded);
-  moneyMovementGroups$ = this.store.select(fromStore.selectMoneyMovements)
-    .pipe(
-    map(data => groupMovementsBy(data, 'timestamp')),
-    tap(() => {
-      setTimeout(() => {
-        this.elementRef.nativeElement.scrollTop = this.elementRef.nativeElement.scrollHeight;
-      })
-    }));
+  get isResolved() {
+    return this.state.status === LoadingStatus.Resolved;
+  }
+
+  get isResolvedNotFound() {
+    return this.state.status === LoadingStatus.ResolvedNotFound;
+  }
+
+  get isRejected() {
+    return this.state.status === LoadingStatus.Rejected;
+  }
 
   hasOnlyOneGroup = hasOnlyOneGroup;
 
   constructor(
     private elementRef: ElementRef,
-    private store: Store<fromStore.State>
-  ) { }
+    private activatedRoute: ActivatedRoute,
+    private store: Store<fromStore.State>,
+    private dialogsService: DialogsService,
+    private movementsService: MovementsService
+  ) {}
 
   ngOnInit() {
+    this.movementsService
+      .loadMovements$(this.accountId)
+      .pipe(
+        tap(() => {
+          setTimeout(() => {
+            this.elementRef.nativeElement.scrollTop = this.elementRef.nativeElement.scrollHeight;
+          });
+        }),
+        takeWhileAlive(this)
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
     this.store.dispatch(fromStore.cleanUpMovementGroups());
   }
 
+  get accountId() {
+    return this.activatedRoute.snapshot.paramMap.get("id");
+  }
+
   onIntervalChange(interval: DateInterval) {
-    this.store.dispatch(fromStore.setMovementsInterval({
-      data: interval
-    }))
+    this.movementsService.triggerReload(interval);
+  }
+
+  addMovement(): void {
+    this.dialogsService.openMovementCrud();
   }
 }

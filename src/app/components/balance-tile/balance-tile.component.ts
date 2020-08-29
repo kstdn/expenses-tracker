@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AutoUnsubscribe } from 'take-while-alive';
 import { DialogsService } from 'src/app/services/dialogs.service';
 import * as fromStore from 'src/app/store';
@@ -14,6 +14,8 @@ import { formatMoney } from 'src/app/helpers/util';
 @AutoUnsubscribe()
 export class BalanceTileComponent implements OnInit {
 
+  @Input() accountId: string;
+
   loading$ = this.store.select(fromStore.selectBalanceLoading);
   loaded$ = this.store.select(fromStore.selectBalanceLoaded);
   balance$ = this.store.select(fromStore.selectMovementBalance).pipe(map(formatMoney));
@@ -26,7 +28,7 @@ export class BalanceTileComponent implements OnInit {
   ngOnInit() { }
 
   enterNewBalance() {
-    this.dialogsService.openBalanceUpdate();
+    this.dialogsService.openBalanceUpdate(this.accountId);
   }
 
 }

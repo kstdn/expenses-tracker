@@ -1,0 +1,27 @@
+export interface EntityState<T> {
+  status: LoadingStatus;
+  item: T;
+  error?: string;
+}
+
+export interface EntityCollectionState<T> {
+  status: CollectionLoadingStatus;
+  items: T[];
+  error?: string;
+}
+
+export enum LoadingStatus {
+  Idle = 'Idle',
+  Loading = 'Loading',
+  Resolved = 'Resolved',
+  ResolvedNotFound = 'ResolvedNotFound',
+  Rejected = 'Rejected',
+}
+
+export enum CollectionLoadingStatus {
+  Idle = 'Idle',
+  Loading = 'Loading',
+  Resolved = 'Resolved',
+  ResolvedEmpty = 'ResolvedEmpty',
+  Rejected = 'Rejected',
+}

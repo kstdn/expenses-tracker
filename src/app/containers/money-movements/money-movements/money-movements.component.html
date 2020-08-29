@@ -1,15 +1,40 @@
-<month-picker (intervalChanged)='onIntervalChange($event)'></month-picker>
+<month-picker (intervalChanged)="onIntervalChange($event)"></month-picker>
 
-<loader *ngIf="loading$ | async"></loader>
+<loader *ngIf="isLoading"></loader>
 
-<ng-container *ngIf="loaded$ | async">
-    <div class="money-movement-groups-container">
-        <ng-container *ngIf="moneyMovementGroups$ | async as moneyMovementGroups">
-            <ng-container *ngFor="let movementGroup of moneyMovementGroups | keyvalue; first as isFirst, last as isLast">
-                <money-movement-group [moneyMovements]="movementGroup.value.moneyMovements" [timestamp]="movementGroup.key"
-                    [isFirst]="isFirst" [isLast]="isLast" [isOnly]="hasOnlyOneGroup(moneyMovementGroups)">
-                </money-movement-group>
-            </ng-container>
-        </ng-container>
-    </div>
+<ng-container *ngIf="isResolved">
+  <div class="money-movement-groups-container">
+    <ng-container
+      *ngFor="
+        let movementGroup of state.item | keyvalue;
+        first as isFirst;
+        last as isLast
+      "
+    >
+      <money-movement-group
+        [moneyMovements]="movementGroup.value.moneyMovements"
+        [timestamp]="movementGroup.key"
+        [isFirst]="isFirst"
+        [isLast]="isLast"
+        [isOnly]="hasOnlyOneGroup(state.item)"
+      >
+      </money-movement-group>
+    </ng-container>
+  </div>
 </ng-container>
+
+<ng-container *ngIf="isResolvedNotFound">
+  <div class="money-movement-groups-container">
+    No money movements found for this period
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isRejected">
+  <div class="money-movement-groups-container">There has been an error</div>
+</ng-container>
+
+<div class="btns">
+    <div class="flex-divider"></div>
+    <balance-tile></balance-tile>
+    <button class="btn primary" (click)="addMovement()">Add</button>
+</div>

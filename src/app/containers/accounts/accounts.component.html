@@ -1,0 +1,19 @@
+<loader *ngIf="loading"></loader>
+
+<div *ngIf="!loading" class="accounts-container">
+  <ng-container *ngIf="accounts">
+    <ng-container *ngFor="let account of accounts">
+      <div class="account-row" [routerLink]="[account.id]">
+        <span class="big-text">{{ account.name }}</span>
+        <div class="flex-divider"></div>
+        <div class="edit-btn-container">
+          <button class="btn primary" (click)="editAccount(account, $event)">Edit</button>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+<div class="btns summary">
+  <div class="flex-divider"></div>
+  <button class="btn primary" (click)="addAccount()">Add</button>
+</div>

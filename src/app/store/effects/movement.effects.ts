@@ -21,17 +21,6 @@ export class MovementEffects {
             )
     );
 
-    $loadMovements = createEffect(() =>
-        this.actions$
-            .pipe(
-                ofType(movementActions.loadMovements),
-                switchMap(({ data: interval }) =>
-                    this.serverService.getAllMovements(interval)
-                        .pipe(
-                            map(movements => movementActions.loadMovementsSuccess({
-                                data: movements.items
-                            }))))));
-
     $addMovement = createEffect(() =>
         this.actions$
             .pipe(

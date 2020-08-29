@@ -37,6 +37,8 @@ import { ExtractDataInterceptor } from './interceptors/extract-data.interceptor'
 import { DateInterceptor } from './interceptors/date.interceptor';
 import { LoginComponent } from './containers/login/login.component';
 import { CookiesInterceptor } from './interceptors/cookies.interceptor';
+import { AccountsComponent } from './containers/accounts/accounts.component';
+import { AccountCrudComponent } from './components/account-crud/account-crud.component';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 
 @NgModule({
@@ -46,6 +48,7 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
     MoneyMovementComponent,
     MoneyMovementsComponent,
     MoneyMovementCrudComponent,
+    AccountCrudComponent,
     AmountInputComponent,
     MonthPickerComponent,
     HelpComponent,
@@ -55,10 +58,12 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
     ToolbarComponent,
     HamburgerIconComponent,
     ToolbarItemComponent,
-    LoginComponent
+    LoginComponent,
+    AccountsComponent,
   ],
   entryComponents: [
     MoneyMovementCrudComponent,
+    AccountCrudComponent,
     BalanceUpdateComponent
   ],
   imports: [

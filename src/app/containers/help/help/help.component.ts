@@ -30,7 +30,7 @@ export class HelpComponent implements OnInit {
   checkBalance() {
     this.balanceButtonMessage = BtnMessages.LOADING;
     forkJoin([
-      this.movementsService.getAccumulatedCurrentBalance$()
+      // this.movementsService.getAccountBalance$()
     ])
     .pipe(
       takeWhileAlive(this),

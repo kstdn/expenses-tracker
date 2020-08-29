@@ -1,17 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { MovementsService } from 'src/app/services/movements.service';
-import { ServerService } from 'src/app/services/server.service';
-import { SimpleMoney } from 'src/app/models/SimpleMoney';
-import { formatMoney, Money } from 'src/app/helpers/util';
-import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
-import { finalize, tap } from 'rxjs/operators';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { Currency } from 'dinero.js';
+import { finalize, tap } from 'rxjs/operators';
+import { formatMoney, Money } from 'src/app/helpers/util';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
-import { Store } from '@ngrx/store';
+import { SimpleMoney } from 'src/app/models/SimpleMoney';
+import { ServerService } from 'src/app/services/server.service';
 import * as fromStore from 'src/app/store';
-import { Actions, ofType } from '@ngrx/effects';
+import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
 
 @Component({
   selector: 'et-balance-update',
@@ -34,12 +33,13 @@ export class BalanceUpdateComponent implements OnInit {
     private serverService: ServerService,
     public dialogRef: MatDialogRef<BalanceUpdateComponent>,
     private store: Store<fromStore.State>,
-    private actions$: Actions
+    private actions$: Actions,
+    @Optional() @Inject(MAT_DIALOG_DATA) public accountId: string
   ) { }
 
   ngOnInit() {
     this.loading = true;
-    this.serverService.getCurrentBalance()
+    this.serverService.getAccountBalance(this.accountId)
       .pipe(
         takeWhileAlive(this),
         finalize(() => this.loading = false)

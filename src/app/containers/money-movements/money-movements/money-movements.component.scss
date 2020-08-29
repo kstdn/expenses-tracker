@@ -3,14 +3,18 @@
     flex-direction: column;
     flex: 1;
     overflow: auto;
-    margin: 16px;
 }
 
 month-picker {
-    margin-bottom: 16px;
+    padding: 16px;
 }
 
 .money-movement-groups-container {
     flex: 1;
     overflow: auto;
+    padding: 0 16px;
+}
+
+.btns {
+  padding: 16px;
 }

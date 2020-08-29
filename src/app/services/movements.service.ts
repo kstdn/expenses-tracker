@@ -1,27 +1,29 @@
 import { Injectable } from '@angular/core';
-import { MoneyMovement } from '../models/MoneyMovement';
-import { ServerService } from './server.service';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
-import { addToExistingGroupOrCreate, removeFromGroup, updateInGroup, isInInterval, formatMoney } from '../helpers/util';
-import { DateInterval } from '../components/shared/month-picker/DateInterval';
-import * as fromStore from './../store';
 import { Store } from '@ngrx/store';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { DateInterval } from '../components/shared/month-picker/DateInterval';
+import { formatMoney, groupMovementsBy, isInInterval, removeFromGroup, updateInGroup } from '../helpers/util';
+import { EntityState, LoadingStatus } from '../models/EntityStatus';
+import { MoneyMovement } from '../models/MoneyMovement';
+import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
+import * as fromStore from './../store';
+import { ServerService } from './server.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovementsService {
 
-  changes$: BehaviorSubject<void> = new BehaviorSubject(null);
-
-  loadingGroups: boolean = true;
+  load$: Subject<DateInterval> = new Subject();
 
   interval: DateInterval;
   groupBy: keyof MoneyMovement = 'timestamp';
 
-  movementGroups: MoneyMovementGroups;
+  state: EntityState<MoneyMovementGroups> = {
+    status: LoadingStatus.Idle,
+    item: {},
+  };
 
   constructor(
     private serverService: ServerService,
@@ -33,12 +35,35 @@ export class MovementsService {
 
   setDateInterval(interval: DateInterval) {
     this.interval = interval;
-    this.changes$.next();
   }
 
   setGroupingCriteria(groupBy: keyof MoneyMovement) {
     this.groupBy = groupBy;
-    this.changes$.next();
+  }
+
+  loadMovements$(accountId: string) {
+    return this.load$.pipe(
+      tap(() => this.state.status = LoadingStatus.Loading),
+      switchMap((interval) =>
+        this.serverService.getAllMovements(accountId, interval).pipe(
+          map((data) => data.items),
+          tap((data) => {
+            if(data.length === 0) {
+              this.state.status = LoadingStatus.ResolvedNotFound;
+              this.state.item = {};
+            } else {
+              this.state.status = LoadingStatus.Resolved;
+            }
+          }),
+          map((data) => this.state.item = groupMovementsBy(data, "timestamp")),
+          tap((data) => this.interval = interval),
+          catchError(e => {
+            this.state.status = LoadingStatus.Rejected;
+            return throwError(e);
+          })
+        )
+      )
+    );
   }
 
   addMovement(movement: MoneyMovement) {
@@ -49,24 +74,26 @@ export class MovementsService {
     return this.serverService.updateMovement(movement)
       .pipe(tap(updatedMovement => {
         if (isInInterval(updatedMovement, this.interval)) {
-          updateInGroup(this.movementGroups, this.groupBy, updatedMovement, this.interval)
+          updateInGroup(this.state.item, this.groupBy, updatedMovement, this.interval)
         } else {
-          removeFromGroup(this.movementGroups, this.groupBy, updatedMovement)
+          removeFromGroup(this.state.item, this.groupBy, updatedMovement)
         }
-        this.changes$.next();
       }));
   }
 
   deleteMovement$(movement: MoneyMovement): Observable<void> {
     return this.serverService.deleteMovement(movement.id)
       .pipe(tap(() => {
-        removeFromGroup(this.movementGroups, this.groupBy, movement);
-        this.changes$.next();
+        removeFromGroup(this.state.item, this.groupBy, movement);
       }));
   }
 
-  getAccumulatedCurrentBalance$(): Observable<string> {
-    return this.serverService.getCurrentBalance()
+  triggerReload(interval: DateInterval) {
+    this.load$.next(interval);
+  }
+
+  getAccountBalance$(accountId: string): Observable<string> {
+    return this.serverService.getAccountBalance(accountId)
       .pipe(
         map(balance => formatMoney(balance))
       )

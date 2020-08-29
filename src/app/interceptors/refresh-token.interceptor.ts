@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, concatMap, filter, finalize, take } from 'rxjs/operators';
 import { ServerService } from '../services/server.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class RefreshTokenInterceptor implements HttpInterceptor {
@@ -10,7 +11,10 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 
   tokenRefreshed$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private serverService: ServerService) {}
+  constructor(
+    private serverService: ServerService,
+    private router: Router
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
@@ -45,7 +49,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
           return next.handle(req);
       }),
       catchError((err) => {
-        // this.serverService.logout();
+        this.router.navigate(['/login']);
         return throwError(err);
       }),
       finalize(() => {

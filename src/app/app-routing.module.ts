@@ -3,13 +3,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { MoneyMovementsComponent } from './containers/money-movements/money-movements/money-movements.component';
 import { HelpComponent } from './containers/help/help/help.component';
 import { LoginComponent } from './containers/login/login.component';
+import { AccountsComponent } from './containers/accounts/accounts.component';
 
 const routes: Routes = [
   {
-    path: 'home', component: MoneyMovementsComponent,
+    path: 'login', component: LoginComponent,
   },
   {
-    path: 'login', component: LoginComponent,
+    path: 'accounts', component: AccountsComponent, pathMatch: 'full'
+  },
+  {
+    path: 'accounts/:id', component: MoneyMovementsComponent,
   },
   {
     path: 'timepoints',
@@ -18,12 +22,12 @@ const routes: Routes = [
   {
     path: 'help', component: HelpComponent,
   },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', redirectTo: 'home' }
+  { path: '', redirectTo: 'accounts', pathMatch: 'full' },
+  { path: '**', redirectTo: 'accounts' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
