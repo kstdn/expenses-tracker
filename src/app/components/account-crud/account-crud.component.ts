@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs/operators';
 import { Messages } from 'src/app/constants/Messages';
 import { Account } from 'src/app/models/Account';
+import { CreateAccountDto } from 'src/app/models/dto/create-account.dto';
 import { ServerService } from 'src/app/services/server.service';
 import { AutoUnsubscribe } from 'take-while-alive';
 
@@ -31,10 +32,12 @@ export class AccountCrudComponent implements OnInit {
   ngOnInit() {
     this.form = this.builder.group({
       name: ['', Validators.required],
+      currency: ['', Validators.required],
     })
 
     if (this.account) {
       this.form.controls.name.setValue(this.account.name);
+      this.form.controls.currency.setValue(this.account.currency);
 
       this.deleteButtonVisible = true;
     }
@@ -48,9 +51,13 @@ export class AccountCrudComponent implements OnInit {
     }
   }
 
+  isInEditMode() {
+    return this.account;
+  }
+
   submit() {
     if (!this.account) {
-      const account: Account = collectInputs(this.form);
+      const account: CreateAccountDto = collectInputs(this.form);
       this.server.addAccount(account)
       .pipe(finalize(() => this.remove(true)))
       .subscribe();
@@ -91,6 +98,7 @@ export class AccountCrudComponent implements OnInit {
 
 const collectInputs = (form: FormGroup): Account => {
   return {
-    name: form.controls.name.value
+    name: form.controls.name.value,
+    currency: form.controls.currency.value,
   }
 }

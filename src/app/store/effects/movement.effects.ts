@@ -1,35 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as movementActions from '../actions/movement.actions';
-import { switchMap, map } from 'rxjs/operators';
-import { ServerService } from 'src/app/services/server.service';
+import { Actions } from '@ngrx/effects';
 
 @Injectable()
 export class MovementEffects {
     constructor(
         private actions$: Actions,
-        private serverService: ServerService
     ) { }
-
-    $setInterval = createEffect(() =>
-        this.actions$
-            .pipe(
-                ofType(movementActions.setMovementsInterval),
-                map(interval => {
-                    return movementActions.loadMovements(interval);
-                })
-            )
-    );
-
-    $addMovement = createEffect(() =>
-        this.actions$
-            .pipe(
-                ofType(movementActions.addMovement),
-                switchMap(({ data: movement }) =>
-                    this.serverService.addMovement(movement)
-                        .pipe(
-                            map(movement => movementActions.addMovementSuccess({
-                                data: movement
-                            }))))));
 
 }

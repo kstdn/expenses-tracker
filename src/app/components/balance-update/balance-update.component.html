@@ -6,12 +6,12 @@
     <ng-container *ngIf="!loading">
         <div>The current balance is {{ currentBalanceFormatted }}</div>
         <div class="amount-row">
-            <amount-input 
-                [initialMoney]="getInitialMoney()" 
+            <amount-input
+                [initialAmount]="getInitialMoney()"
                 (moneyChanged)="onMoneyChanged($event)"
             ></amount-input>
         </div>
-        <div *ngIf="newMovement">This change will add a new {{ newMovementType }} with amount {{ newMovementFormatted }}.</div>
+        <div *ngIf="newMovementAmount">This change will add a new {{ newMovementType }} with amount {{ newMovementFormatted }}.</div>
     </ng-container>
 </div>
 <div class="dialog-footer">

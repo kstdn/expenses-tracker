@@ -3,7 +3,7 @@
 <div *ngIf="!loading" class="accounts-container">
   <ng-container *ngIf="accounts">
     <ng-container *ngFor="let account of accounts">
-      <div class="account-row" [routerLink]="[account.id]">
+      <div class="account-row" [routerLink]="[account.id, account.currency]">
         <span class="big-text">{{ account.name }}</span>
         <div class="flex-divider"></div>
         <div class="edit-btn-container">

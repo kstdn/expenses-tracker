@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Currency } from 'dinero.js';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
 
 @Component({
@@ -9,6 +10,7 @@ import { MoneyMovement } from 'src/app/models/MoneyMovement';
 export class MoneyMovementGroupComponent implements OnInit {
 
   @Input() moneyMovements: MoneyMovement[];
+  @Input() currency: Currency;
   @Input() timestamp: Date;
   @Input() isFirst: boolean;
   @Input() isLast: boolean;

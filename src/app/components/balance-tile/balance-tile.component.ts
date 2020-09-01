@@ -1,34 +1,45 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { AutoUnsubscribe } from 'take-while-alive';
-import { DialogsService } from 'src/app/services/dialogs.service';
-import * as fromStore from 'src/app/store';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { Component, Input, OnInit } from "@angular/core";
+import { Currency } from "dinero.js";
+import { DialogsService } from "src/app/services/dialogs.service";
+import { MovementsService } from "src/app/services/movements.service";
+import { AutoUnsubscribe } from "take-while-alive";
+import { LoadingStatus } from 'src/app/models/EntityStatus';
 import { formatMoney } from 'src/app/helpers/util';
 
 @Component({
-  selector: 'balance-tile',
-  templateUrl: './balance-tile.component.html',
-  styleUrls: ['./balance-tile.component.scss']
+  selector: "balance-tile",
+  templateUrl: "./balance-tile.component.html",
+  styleUrls: ["./balance-tile.component.scss"],
 })
 @AutoUnsubscribe()
 export class BalanceTileComponent implements OnInit {
-
   @Input() accountId: string;
+  @Input() currency: Currency;
 
-  loading$ = this.store.select(fromStore.selectBalanceLoading);
-  loaded$ = this.store.select(fromStore.selectBalanceLoaded);
-  balance$ = this.store.select(fromStore.selectMovementBalance).pipe(map(formatMoney));
+  get currentBalance(): number {
+    return this.movementsService.balanceState.item;
+  };
+
+  get currentBalanceFormatted(): string {
+    return formatMoney(this.currentBalance, this.currency);
+  };
+
+  get loading(): boolean {
+    return this.movementsService.balanceState.status === LoadingStatus.Loading;
+  };
 
   constructor(
     private dialogsService: DialogsService,
-    private store: Store<fromStore.State>
-  ) { }
+    private movementsService: MovementsService
+  ) {}
 
   ngOnInit() { }
 
   enterNewBalance() {
-    this.dialogsService.openBalanceUpdate(this.accountId);
+    this.dialogsService.openBalanceUpdate(
+      this.currentBalance,
+      this.accountId,
+      this.currency
+    );
   }
-
 }

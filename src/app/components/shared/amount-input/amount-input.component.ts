@@ -1,7 +1,6 @@
-import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Precision } from 'src/app/helpers/Constants';
-import { SimpleMoney } from 'src/app/models/SimpleMoney';
-import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'amount-input',
@@ -10,9 +9,9 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class AmountInputComponent {
 
-  @Input() initialMoney: Partial<SimpleMoney>;
-  @Output() moneyChanged = new EventEmitter<SimpleMoney>();
-  
+  @Input() initialAmount: number;
+  @Output() moneyChanged = new EventEmitter<number>();
+
   form: FormGroup;
 
   amountWholePart: number = 0;
@@ -36,11 +35,11 @@ export class AmountInputComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.initialMoney && changes.initialMoney.isFirstChange) {
-      this.initialMoney = this.initialMoney || { amount: 0 }
-      const amountWholePart = this.initialMoney.amount / (Math.pow(10, Precision))
+    if (changes.initialAmount && changes.initialAmount.isFirstChange) {
+      this.initialAmount = this.initialAmount || 0;
+      const amountWholePart = this.initialAmount / (Math.pow(10, Precision))
       this.amountWholePart = Math.floor(amountWholePart);
-      this.amountDecimalPart = Math.abs(this.initialMoney.amount % (Math.pow(10, Precision)));
+      this.amountDecimalPart = Math.abs(this.initialAmount % (Math.pow(10, Precision)));
     }
   }
 
@@ -59,11 +58,7 @@ export class AmountInputComponent {
     const sum = (amountWholePart * Math.pow(10, Precision)) + this.amountDecimalPart;
 
     if (this.isValid()) {
-      this.moneyChanged.emit({
-        amount: sum,
-        currency: 'BGN',
-        precision: Precision
-      })
+      this.moneyChanged.emit(sum)
     } else {
       this.moneyChanged.emit(null)
     }

@@ -2,11 +2,11 @@
     <div class="date">{{ timestamp | date }}</div>
 </div>
 
-<div class="pillar" [class.is-first-group]="isFirst" 
+<div class="pillar" [class.is-first-group]="isFirst"
                     [class.is-last-group]="isLast"
                     [class.is-only-group]="isOnly"
                     ></div>
-                 
+
 <ng-container *ngFor="let movement of moneyMovements">
-    <money-movement [movement]="movement"></money-movement>
+    <money-movement [movement]="movement" [currency]="currency"></money-movement>
 </ng-container>

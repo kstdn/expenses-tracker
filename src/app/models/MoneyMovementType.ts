@@ -1,4 +1,4 @@
 export enum MoneyMovementType {
-    Immediate,
-    Planned
+    Immediate = 'Immediate',
+    Planned = 'Planned',
 }

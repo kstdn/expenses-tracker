@@ -5,6 +5,7 @@ import { MoneyMovement } from '../models/MoneyMovement';
 import { BalanceUpdateComponent } from '../components/balance-update/balance-update.component';
 import { Account } from '../models/Account';
 import { AccountCrudComponent } from '../components/account-crud/account-crud.component';
+import { Currency } from 'dinero.js';
 
 @Injectable({
   providedIn: 'root'
@@ -22,16 +23,24 @@ export class DialogsService {
     });
   }
 
-  openMovementCrud(movement?: MoneyMovement) {
+  openMovementCrud(currency: Currency, movement?: MoneyMovement, accountId?: string) {
     return this.dialog.open(MoneyMovementCrudComponent, {
       width: '450px',
-      data: movement
+      data: {
+        movement,
+        accountId,
+        currency,
+      }
     });
   }
 
-  openBalanceUpdate(accountId: string) {
+  openBalanceUpdate(currentBalance: number, accountId: string, currency: string) {
     this.dialog.open(BalanceUpdateComponent, {
-      data: accountId,
+      data: {
+        currentBalance,
+        accountId,
+        currency
+      },
       width: '450px'
     });
   }

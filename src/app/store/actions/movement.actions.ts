@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { DateInterval } from 'src/app/components/shared/month-picker/DateInterval';
 import { MoneyMovement } from 'src/app/models/MoneyMovement';
+import { CreateMoneyMovementDto } from 'src/app/models/dto/create-money-movement.dto';
 
 export const setMovementsInterval = createAction(
   '[Movement] Set Movements Interval',
@@ -24,7 +25,7 @@ export const loadMovementsFailure = createAction(
 
 export const addMovement = createAction(
   '[Movement] Add Movement',
-  props<{ data: MoneyMovement }>()
+  props<{ data: CreateMoneyMovementDto }>()
 );
 
 export const addMovementSuccess = createAction(

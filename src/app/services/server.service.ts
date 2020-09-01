@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { MoneyMovement } from '../models/MoneyMovement';
-import { SimpleMoney } from '../models/SimpleMoney';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
-import { Paginated } from '../models/Paginated';
 import { Account } from '../models/Account';
+import { CreateAccountDto } from '../models/dto/create-account.dto';
+import { CreateMoneyMovementDto } from '../models/dto/create-money-movement.dto';
+import { MoneyMovement } from '../models/MoneyMovement';
+import { Paginated } from '../models/Paginated';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class ServerService {
     return this.http.get<Paginated<Account>>(this.baseUrl + 'money/accounts');
   }
 
-  addAccount(account: Account): Observable<Account> {
+  addAccount(account: CreateAccountDto): Observable<Account> {
     return this.http.post<Account>(this.baseUrl + 'money/accounts', account);
   }
 
@@ -53,7 +54,7 @@ export class ServerService {
     });
   }
 
-  addMovement(movement: MoneyMovement): Observable<MoneyMovement> {
+  addMovement(movement: CreateMoneyMovementDto): Observable<MoneyMovement> {
     return this.http.post<MoneyMovement>(this.baseUrl + 'money/movements', movement);
   }
 
@@ -65,12 +66,8 @@ export class ServerService {
     return this.http.delete<void>(this.baseUrl + 'money/movements/' + id);
   }
 
-  getAccountBalance(accountId: string): Observable<SimpleMoney> {
-    return this.http.get<SimpleMoney>(this.baseUrl + 'money/accounts/' + accountId + '/balance');
-  }
-
-  getAccumulatedCurrentBalance(): Observable<SimpleMoney> {
-    return this.http.get<SimpleMoney>(this.baseUrl + 'money/movements/balance-accumulated');
+  getAccountBalance(accountId: string): Observable<number> {
+    return this.http.get<number>(this.baseUrl + 'money/accounts/' + accountId + '/balance');
   }
 
 }

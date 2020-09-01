@@ -1,101 +1,101 @@
-import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable, Subject, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { DateInterval } from '../components/shared/month-picker/DateInterval';
-import { formatMoney, groupMovementsBy, isInInterval, removeFromGroup, updateInGroup } from '../helpers/util';
-import { EntityState, LoadingStatus } from '../models/EntityStatus';
-import { MoneyMovement } from '../models/MoneyMovement';
-import { MoneyMovementGroups } from '../models/MoneyMovementGroup';
-import * as fromStore from './../store';
-import { ServerService } from './server.service';
+import { Injectable } from "@angular/core";
+import { Observable, throwError } from "rxjs";
+import { catchError, finalize, map, tap } from "rxjs/operators";
+import { DateInterval } from "../components/shared/month-picker/DateInterval";
+import { addToExistingGroupOrCreate, groupMovementsBy, isInInterval, removeFromGroup, updateInGroup } from "../helpers/util";
+import { CreateMoneyMovementDto } from "../models/dto/create-money-movement.dto";
+import { EntityState, LoadingStatus } from "../models/EntityStatus";
+import { MoneyMovement } from "../models/MoneyMovement";
+import { MoneyMovementGroups } from "../models/MoneyMovementGroup";
+import { ServerService } from "./server.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MovementsService {
-
-  load$: Subject<DateInterval> = new Subject();
-
   interval: DateInterval;
-  groupBy: keyof MoneyMovement = 'timestamp';
+  groupBy: keyof MoneyMovement = "timestamp";
 
   state: EntityState<MoneyMovementGroups> = {
     status: LoadingStatus.Idle,
     item: {},
   };
 
-  constructor(
-    private serverService: ServerService,
-    private store: Store<fromStore.State>
-  ) {
-    store.select(fromStore.selectMoneyMovementInterval)
-      .subscribe(value => this.interval = value);
-  }
+  balanceState: EntityState<number> = {
+    status: LoadingStatus.Idle,
+    item: 0,
+  };
 
-  setDateInterval(interval: DateInterval) {
-    this.interval = interval;
-  }
+  constructor(private serverService: ServerService) {}
 
   setGroupingCriteria(groupBy: keyof MoneyMovement) {
     this.groupBy = groupBy;
   }
 
-  loadMovements$(accountId: string) {
-    return this.load$.pipe(
-      tap(() => this.state.status = LoadingStatus.Loading),
-      switchMap((interval) =>
-        this.serverService.getAllMovements(accountId, interval).pipe(
-          map((data) => data.items),
-          tap((data) => {
-            if(data.length === 0) {
-              this.state.status = LoadingStatus.ResolvedNotFound;
-              this.state.item = {};
-            } else {
-              this.state.status = LoadingStatus.Resolved;
-            }
-          }),
-          map((data) => this.state.item = groupMovementsBy(data, "timestamp")),
-          tap((data) => this.interval = interval),
-          catchError(e => {
-            this.state.status = LoadingStatus.Rejected;
-            return throwError(e);
-          })
-        )
-      )
+  loadMovements$(interval: DateInterval, accountId: string) {
+    this.state.status = LoadingStatus.Loading;
+    return this.serverService.getAllMovements(accountId, interval).pipe(
+      map((data) => data.items),
+      tap((data) => {
+        if (data.length === 0) {
+          this.state.status = LoadingStatus.ResolvedNotFound;
+          this.state.item = {};
+        } else {
+          this.state.status = LoadingStatus.Resolved;
+        }
+      }),
+      map((data) => (this.state.item = groupMovementsBy(data, "timestamp"))),
+      tap(() => (this.interval = interval)),
+      tap(() => this.loadBalance$(accountId)),
+      catchError((e) => {
+        this.state.status = LoadingStatus.Rejected;
+        return throwError(e);
+      })
     );
   }
 
-  addMovement(movement: MoneyMovement) {
-    this.store.dispatch(fromStore.addMovement({ data: movement }))
+  addMovement$(movement: CreateMoneyMovementDto) {
+    return this.serverService.addMovement(movement).pipe(
+      tap((created) => {
+        addToExistingGroupOrCreate(this.state.item, this.groupBy, created);
+      }),
+      tap(() => this.loadBalance$(movement.accountId)),
+    );
   }
 
   updateMovement$(movement: MoneyMovement) {
-    return this.serverService.updateMovement(movement)
-      .pipe(tap(updatedMovement => {
+    return this.serverService.updateMovement(movement).pipe(
+      tap((updatedMovement) => {
         if (isInInterval(updatedMovement, this.interval)) {
-          updateInGroup(this.state.item, this.groupBy, updatedMovement, this.interval)
+          updateInGroup(this.state.item, this.groupBy, updatedMovement);
         } else {
-          removeFromGroup(this.state.item, this.groupBy, updatedMovement)
+          removeFromGroup(this.state.item, this.groupBy, updatedMovement);
         }
-      }));
+      }),
+      tap(() => this.loadBalance$(movement.accountId)),
+    );
   }
 
   deleteMovement$(movement: MoneyMovement): Observable<void> {
-    return this.serverService.deleteMovement(movement.id)
-      .pipe(tap(() => {
+    return this.serverService.deleteMovement(movement.id).pipe(
+      tap(() => {
         removeFromGroup(this.state.item, this.groupBy, movement);
-      }));
+      }),
+      tap(() => this.loadBalance$(movement.accountId)),
+    );
   }
 
-  triggerReload(interval: DateInterval) {
-    this.load$.next(interval);
-  }
-
-  getAccountBalance$(accountId: string): Observable<string> {
-    return this.serverService.getAccountBalance(accountId)
+  loadBalance$(accountId: string) {
+    this.balanceState.status = LoadingStatus.Loading;
+    return this.serverService
+      .getAccountBalance(accountId)
       .pipe(
-        map(balance => formatMoney(balance))
+        tap((balance) => {
+          this.balanceState.item = balance;
+        }),
+        catchError(() => (this.balanceState.status = LoadingStatus.Rejected)),
+        finalize(() => (this.balanceState.status = LoadingStatus.Resolved))
       )
+      .subscribe();
   }
 }

@@ -13,6 +13,7 @@
     >
       <money-movement-group
         [moneyMovements]="movementGroup.value.moneyMovements"
+        [currency]="currency"
         [timestamp]="movementGroup.key"
         [isFirst]="isFirst"
         [isLast]="isLast"
@@ -35,6 +36,6 @@
 
 <div class="btns">
     <div class="flex-divider"></div>
-    <balance-tile></balance-tile>
+    <balance-tile [accountId]="accountId" [currency]="currency"></balance-tile>
     <button class="btn primary" (click)="addMovement()">Add</button>
 </div>

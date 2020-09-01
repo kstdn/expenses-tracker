@@ -1,16 +1,18 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Actions, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { Currency } from 'dinero.js';
-import { finalize, tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { formatMoney, Money } from 'src/app/helpers/util';
-import { MoneyMovement } from 'src/app/models/MoneyMovement';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
-import { SimpleMoney } from 'src/app/models/SimpleMoney';
-import { ServerService } from 'src/app/services/server.service';
-import * as fromStore from 'src/app/store';
-import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
+import { MovementsService } from 'src/app/services/movements.service';
+import { AutoUnsubscribe } from 'take-while-alive';
+import { CreateMoneyMovementDto } from '../../models/dto/create-money-movement.dto';
+
+type BalanceUpdateComponentInput = {
+  currentBalance: number,
+  accountId: string;
+  currency: Currency;
+}
 
 @Component({
   selector: 'et-balance-update',
@@ -20,49 +22,32 @@ import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
 @AutoUnsubscribe()
 export class BalanceUpdateComponent implements OnInit {
 
-  currentBalance: SimpleMoney;
   currentBalanceFormatted: string;
 
-  newMovement: SimpleMoney;
+  newMovementAmount: number;
   newMovementFormatted: string;
   newMovementType: string;
 
-  loading = true;
+  loading = false;
 
   constructor(
-    private serverService: ServerService,
     public dialogRef: MatDialogRef<BalanceUpdateComponent>,
-    private store: Store<fromStore.State>,
-    private actions$: Actions,
-    @Optional() @Inject(MAT_DIALOG_DATA) public accountId: string
+    private movementsService: MovementsService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public input: BalanceUpdateComponentInput
   ) { }
 
   ngOnInit() {
-    this.loading = true;
-    this.serverService.getAccountBalance(this.accountId)
-      .pipe(
-        takeWhileAlive(this),
-        finalize(() => this.loading = false)
-      )
-      .subscribe(balance => {
-        this.currentBalance = balance;
-        this.currentBalanceFormatted = formatMoney(balance);
-      })
-
-    this.actions$.pipe(
-      ofType(fromStore.addMovementSuccess),
-      takeWhileAlive(this),
-      tap(_ => this.remove())
-    )
-      .subscribe();
+    this.currentBalanceFormatted = formatMoney(this.input.currentBalance, this.input.currency);
   }
 
   getInitialMoney() {
-    return this.currentBalance;
+    return this.input.currentBalance;
   }
 
-  onMoneyChanged(money: SimpleMoney): void {
-    const diff = Money(money).subtract(Money(this.currentBalance));
+  onMoneyChanged(amount: number): void {
+    const manualyEntered = Money(amount, this.input.currency);
+    const current = Money(this.input.currentBalance, this.input.currency);
+    const diff = manualyEntered.subtract(current);
 
     if (diff.isZero()) {
       this.unsetDiff();
@@ -72,12 +57,13 @@ export class BalanceUpdateComponent implements OnInit {
   }
 
   get submitIsActive() {
-    return this.newMovement !== undefined;
+    return this.newMovementAmount !== undefined;
   }
 
   submit() {
-    const movement: MoneyMovement = {
-      money: this.newMovement,
+    const movement: CreateMoneyMovementDto = {
+      accountId: this.input.accountId,
+      amount: this.newMovementAmount,
       timestamp: new Date(),
       type: MoneyMovementType.Immediate,
       description: ''
@@ -85,21 +71,20 @@ export class BalanceUpdateComponent implements OnInit {
 
     this.loading = true;
 
-    this.store.dispatch(fromStore.addMovement({ data: movement }));
+    this.movementsService.addMovement$(movement)
+      .pipe(
+        finalize(() => this.remove())
+      ).subscribe();
   }
 
   setDiff(diff) {
-    this.newMovement = {
-      amount: diff.getAmount(),
-      currency: diff.getCurrency() as Currency,
-      precision: diff.getPrecision()
-    }
-    this.newMovementFormatted = formatMoney(this.newMovement);
+    this.newMovementAmount = diff.getAmount();
+    this.newMovementFormatted = formatMoney(this.newMovementAmount, this.input.currency);
     this.newMovementType = diff.isNegative() ? 'Expence' : 'Income';
   }
 
   unsetDiff() {
-    this.newMovement = undefined;
+    this.newMovementAmount = undefined;
     this.newMovementFormatted = undefined;
     this.newMovementType = undefined;
   }

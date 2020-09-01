@@ -1,37 +1,47 @@
-import { Component, OnInit, Inject, Optional } from '@angular/core';
-import { MoneyMovement } from 'src/app/models/MoneyMovement';
-import { MovementsService } from 'src/app/services/movements.service';
-import { finalize, tap } from 'rxjs/operators';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SimpleMoney } from 'src/app/models/SimpleMoney';
-import { Money } from 'src/app/helpers/util';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Messages } from 'src/app/constants/Messages';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Actions, ofType } from '@ngrx/effects';
-import { takeWhileAlive, AutoUnsubscribe } from 'take-while-alive';
-import * as fromStore from 'src/app/store';
+import { Component, Inject, OnInit, Optional } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Currency } from 'dinero.js';
+import { finalize } from "rxjs/operators";
+import { Messages } from "src/app/constants/Messages";
+import { Money } from "src/app/helpers/util";
+import { MoneyMovement } from "src/app/models/MoneyMovement";
+import { MovementsService } from "src/app/services/movements.service";
+import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
+import { CreateMoneyMovementDto } from "../../models/dto/create-money-movement.dto";
+
+type MoneyMovementCrudInput = {
+  movement: MoneyMovement;
+  accountId: string;
+  currency: Currency;
+};
 
 @Component({
-  templateUrl: './money-movement-crud.component.html',
-  styleUrls: ['./money-movement-crud.component.scss']
+  templateUrl: "./money-movement-crud.component.html",
+  styleUrls: ["./money-movement-crud.component.scss"],
 })
 @AutoUnsubscribe()
 export class MoneyMovementCrudComponent implements OnInit {
+  movementDirections = [
+    {
+      id: 0,
+      text: "Expense",
+    },
+    {
+      id: 1,
+      text: "Income",
+    },
+  ];
 
-  movementDirections = [{
-    id: 0,
-    text: 'Expense'
-  }, {
-    id: 1,
-    text: 'Income'
-  }];
-
-  movementTypes = [{
-    text: 'Immediate'
-  }, {
-    text: 'Planned'
-  }];
+  movementTypes = [
+    {
+      text: "Immediate",
+    },
+    {
+      text: "Planned",
+    },
+  ];
 
   deleteButtonVisible = false;
   deleteConfirmationPromptVisible = false;
@@ -43,9 +53,8 @@ export class MoneyMovementCrudComponent implements OnInit {
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
     public builder: FormBuilder,
-    private actions$: Actions,
-    @Optional() @Inject(MAT_DIALOG_DATA) public movement: MoneyMovement
-  ) { }
+    @Optional() @Inject(MAT_DIALOG_DATA) public input: MoneyMovementCrudInput
+  ) {}
 
   ngOnInit() {
     this.form = this.builder.group({
@@ -53,31 +62,31 @@ export class MoneyMovementCrudComponent implements OnInit {
       typeId: [this.movementTypes[0].text, Validators.required],
       amount: [0, Validators.min(1)],
       timestamp: [new Date(), Validators.required],
-      description: ''
-    })
+      description: "",
+    });
 
-    if (this.movement) {
-      this.form.controls.amount.setValue(Math.abs(this.movement.money.amount));
-      this.form.controls.timestamp.setValue(new Date(this.movement.timestamp));
-      this.form.controls.typeId.setValue(this.movement.type);
-      this.form.controls.directionId.setValue(Money(this.movement.money).isNegative() ? 0 : 1);
-      this.form.controls.description.setValue(this.movement.description);
+    if (this.input.movement) {
+      this.form.controls.amount.setValue(
+        Math.abs(this.input.movement.amount)
+      );
+      this.form.controls.timestamp.setValue(
+        new Date(this.input.movement.timestamp)
+      );
+      this.form.controls.typeId.setValue(this.input.movement.type);
+      this.form.controls.directionId.setValue(
+        Money(this.input.movement.amount, this.input.currency).isNegative() ? 0 : 1
+      );
+      this.form.controls.description.setValue(this.input.movement.description);
 
       this.deleteButtonVisible = true;
     }
-
-    this.actions$.pipe(
-      takeWhileAlive(this),
-      ofType(fromStore.addMovementSuccess),
-      tap(() => this.remove())
-    ).subscribe();
   }
 
   getMode() {
-    if (this.movement) {
-      return 'Edit';
+    if (this.input.movement) {
+      return "Edit";
     } else {
-      return 'Add';
+      return "Add";
     }
   }
 
@@ -85,33 +94,43 @@ export class MoneyMovementCrudComponent implements OnInit {
     return this.form.controls.directionId.value === 0;
   }
 
-  onMoneyChanged(money: SimpleMoney): void {
-    this.form.controls.amount.setValue(money && money.amount);
+  onMoneyChanged(amount: number): void {
+    this.form.controls.amount.setValue(amount);
   }
 
   submit() {
-    if (!this.movement) {
-      const movement: MoneyMovement = collectInputs(this.form);
-      this.movementsService.addMovement(movement);
+    if (!this.input.movement) {
+      const movement = {
+        ...collectInputs(this.form),
+        accountId: this.input.accountId,
+      } as CreateMoneyMovementDto;
+      this.movementsService
+        .addMovement$(movement)
+        .pipe(
+          takeWhileAlive(this),
+          finalize(() => this.remove()),
+        ).subscribe();
     } else {
       const updatedMovement: MoneyMovement = {
-        ...this.movement,
-        ...collectInputs(this.form)
-      }
-      this.movementsService.updateMovement$(updatedMovement)
-        .pipe(finalize(() => this.remove()))
-        .subscribe();
+        ...this.input.movement,
+        ...collectInputs(this.form),
+      };
+      this.movementsService
+        .updateMovement$(updatedMovement)
+        .pipe(
+          takeWhileAlive(this),
+          finalize(() => this.remove()),
+        ).subscribe();
     }
   }
 
   submitDelete() {
-    this.movementsService.deleteMovement$(this.movement)
-      .subscribe({
-        next: () => {
-          this.snackBar.open(Messages.Deleted)
-          this.remove()
-        }
-      });
+    this.movementsService.deleteMovement$(this.input.movement).subscribe({
+      next: () => {
+        this.snackBar.open(Messages.Deleted);
+        this.remove();
+      },
+    });
   }
 
   showDeleteConfirmationPrompt() {
@@ -122,24 +141,23 @@ export class MoneyMovementCrudComponent implements OnInit {
     this.deleteConfirmationPromptVisible = false;
   }
 
-  getInitialMoney() {
-    return this.movement && this.movement.money;
+  getInitialAmount() {
+    return this.input.movement && this.input.movement.amount;
   }
 
   remove() {
     this.dialogRef.close();
   }
-
 }
 
-const collectInputs = (form: FormGroup): MoneyMovement => {
+const collectInputs = (form: FormGroup): Partial<CreateMoneyMovementDto> => {
   const isNegative = form.controls.directionId.value === 0;
   const multiplier = isNegative ? -1 : 1;
 
   return {
-    money: { amount: form.controls.amount.value * multiplier, currency:'BGN', precision: 2 },
+    amount: form.controls.amount.value * multiplier,
     timestamp: form.controls.timestamp.value,
     type: form.controls.typeId.value,
-    description: form.controls.description.value
-  }
-}
+    description: form.controls.description.value,
+  };
+};

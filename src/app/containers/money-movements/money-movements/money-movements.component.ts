@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnInit } from "@angular/core";
+import { Component, ElementRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Store } from "@ngrx/store";
+import { Currency } from 'dinero.js';
 import { tap } from "rxjs/operators";
 import { hasOnlyOneGroup } from "src/app/helpers/util";
 import { LoadingStatus } from "src/app/models/EntityStatus";
@@ -15,7 +16,8 @@ import { DateInterval } from "../../../components/shared/month-picker/DateInterv
   styleUrls: ["./money-movements.component.scss"],
 })
 @AutoUnsubscribe()
-export class MoneyMovementsComponent implements OnInit {
+export class MoneyMovementsComponent {
+
   get state() {
     return this.movementsService.state;
   }
@@ -43,12 +45,11 @@ export class MoneyMovementsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private store: Store<fromStore.State>,
     private dialogsService: DialogsService,
-    private movementsService: MovementsService
+    private movementsService: MovementsService,
   ) {}
 
-  ngOnInit() {
-    this.movementsService
-      .loadMovements$(this.accountId)
+  reload(interval: DateInterval) {
+    this.movementsService.loadMovements$(interval, this.accountId)
       .pipe(
         tap(() => {
           setTimeout(() => {
@@ -68,11 +69,15 @@ export class MoneyMovementsComponent implements OnInit {
     return this.activatedRoute.snapshot.paramMap.get("id");
   }
 
+  get currency(): Currency {
+    return this.activatedRoute.snapshot.paramMap.get("currency") as Currency;
+  }
+
   onIntervalChange(interval: DateInterval) {
-    this.movementsService.triggerReload(interval);
+    this.reload(interval);
   }
 
   addMovement(): void {
-    this.dialogsService.openMovementCrud();
+    this.dialogsService.openMovementCrud(this.currency, undefined, this.accountId);
   }
 }

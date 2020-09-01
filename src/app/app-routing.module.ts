@@ -13,7 +13,7 @@ const routes: Routes = [
     path: 'accounts', component: AccountsComponent, pathMatch: 'full'
   },
   {
-    path: 'accounts/:id', component: MoneyMovementsComponent,
+    path: 'accounts/:id/:currency', component: MoneyMovementsComponent,
   },
   {
     path: 'timepoints',
