@@ -2,7 +2,7 @@
 
 <loader *ngIf="isLoading"></loader>
 
-<div class="money-movement-groups-container">
+<div #moneyMovementsGroupContainer class="money-movement-groups-container">
   <ng-container *ngIf="isResolved">
     <ng-container
       *ngFor="
@@ -35,6 +35,7 @@
 </div>
 
 <div class="btns">
+  <daily-budget-tile [currency]="currency"></daily-budget-tile>
   <div class="flex-divider"></div>
   <balance-tile [accountId]="accountId" [currency]="currency"></balance-tile>
   <button class="btn primary" (click)="addMovement()">Add</button>

@@ -1,13 +1,11 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Store } from "@ngrx/store";
 import { Currency } from 'dinero.js';
 import { tap } from "rxjs/operators";
 import { hasOnlyOneGroup } from "src/app/helpers/util";
 import { LoadingStatus } from "src/app/models/EntityStatus";
 import { DialogsService } from "src/app/services/dialogs.service";
 import { MovementsService } from "src/app/services/movements.service";
-import * as fromStore from "src/app/store";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
 import { DateInterval } from "../../../components/shared/month-picker/DateInterval";
 
@@ -18,8 +16,10 @@ import { DateInterval } from "../../../components/shared/month-picker/DateInterv
 @AutoUnsubscribe()
 export class MoneyMovementsComponent {
 
+  @ViewChild('moneyMovementsGroupContainer', { static: false }) moneyMovementsGroupContainer: ElementRef<HTMLDivElement>;
+
   get state() {
-    return this.movementsService.state;
+    return this.movementsService.movementsState;
   }
 
   get isLoading() {
@@ -41,28 +41,29 @@ export class MoneyMovementsComponent {
   hasOnlyOneGroup = hasOnlyOneGroup;
 
   constructor(
-    private elementRef: ElementRef,
     private activatedRoute: ActivatedRoute,
-    private store: Store<fromStore.State>,
     private dialogsService: DialogsService,
     private movementsService: MovementsService,
   ) {}
 
-  reload(interval: DateInterval) {
+  ngOnInit() {
+    this.movementsService.loadAccountData$(this.accountId).subscribe();
+  }
+
+  reloadMoneyMovements(interval: DateInterval) {
     this.movementsService.loadMovements$(interval, this.accountId)
       .pipe(
         tap(() => {
           setTimeout(() => {
-            this.elementRef.nativeElement.scrollTop = this.elementRef.nativeElement.scrollHeight;
+            this.moneyMovementsGroupContainer.nativeElement.scrollTo({
+              top: this.moneyMovementsGroupContainer.nativeElement.scrollHeight,
+              behavior: 'smooth',
+            });
           });
         }),
         takeWhileAlive(this)
       )
       .subscribe();
-  }
-
-  ngOnDestroy() {
-    this.store.dispatch(fromStore.cleanUpMovementGroups());
   }
 
   get accountId() {
@@ -74,7 +75,7 @@ export class MoneyMovementsComponent {
   }
 
   onIntervalChange(interval: DateInterval) {
-    this.reload(interval);
+    this.reloadMoneyMovements(interval);
   }
 
   addMovement(): void {

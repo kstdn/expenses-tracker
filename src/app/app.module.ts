@@ -40,6 +40,7 @@ import { CookiesInterceptor } from './interceptors/cookies.interceptor';
 import { AccountsComponent } from './containers/accounts/accounts.component';
 import { AccountCrudComponent } from './components/account-crud/account-crud.component';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
+import { DailyBudgetTileComponent } from './components/daily-budget-tile/daily-budget-tile.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
     ToolbarItemComponent,
     LoginComponent,
     AccountsComponent,
+    DailyBudgetTileComponent,
   ],
   entryComponents: [
     MoneyMovementCrudComponent,

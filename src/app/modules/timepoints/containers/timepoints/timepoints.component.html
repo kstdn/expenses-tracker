@@ -1,12 +1,12 @@
-<div class="big-text">Your daily budget will be calculated based on your next timepoint</div>
+<div class="big-text">Your daily budget will be calculated based on the count of days between today and the next closest timepoint</div>
 
 
 <div class="timepoint-picker-container">
-    <div class="medium-text">Create a timepoint every month on this date(s):</div>
+    <div class="medium-text">Timepoints</div>
 
     <div class="timepoint-picker">
-        <div class="timepoint-option" 
-            *ngFor="let number of timepointOptions" 
+        <div class="timepoint-option"
+            *ngFor="let number of timepointOptions"
             [class.selected]="isSelected(number)"
             (click)="toggle(number)"
         >{{ number }}</div>

@@ -17,7 +17,7 @@ export class BalanceTileComponent {
   @Input() currency: Currency;
 
   get currentBalance(): number {
-    return this.movementsService.balanceState.item;
+    return this.movementsService.balanceState$.value.item;
   };
 
   get currentBalanceFormatted(): string {
@@ -25,7 +25,7 @@ export class BalanceTileComponent {
   };
 
   get loading(): boolean {
-    return this.movementsService.balanceState.status === LoadingStatus.Loading;
+    return this.movementsService.balanceState$.value.status === LoadingStatus.Loading;
   };
 
   constructor(
