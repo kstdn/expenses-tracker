@@ -3,6 +3,7 @@ import { finalize, map } from "rxjs/operators";
 import { Account } from 'src/app/models/Account';
 import { DialogsService } from "src/app/services/dialogs.service";
 import { ServerService } from "src/app/services/server.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "et-accounts",
@@ -16,7 +17,8 @@ export class AccountsComponent implements OnInit {
 
   constructor(
     private server: ServerService,
-    private dialogsService: DialogsService
+    private dialogsService: DialogsService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -38,6 +40,11 @@ export class AccountsComponent implements OnInit {
         this.reload();
       }
     });
+  }
+
+  openTimepoints(account: Account, $event: MouseEvent): void {
+    $event.stopPropagation();
+    this.router.navigate(['accounts', account.id, 'timepoints']);
   }
 
   editAccount(account: Account, $event: MouseEvent): void {

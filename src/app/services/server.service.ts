@@ -7,6 +7,7 @@ import { CreateAccountDto } from '../models/dto/create-account.dto';
 import { CreateMoneyMovementDto } from '../models/dto/create-money-movement.dto';
 import { MoneyMovement } from '../models/MoneyMovement';
 import { Paginated } from '../models/Paginated';
+import { Timepoint } from '../models/Timepoint';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +69,16 @@ export class ServerService {
 
   getAccountBalance(accountId: string): Observable<number> {
     return this.http.get<number>(this.baseUrl + 'money/accounts/' + accountId + '/balance');
+  }
+
+  getTimepoints(accountId: string): Observable<Timepoint[]> {
+    return this.http.get<Timepoint[]>(this.baseUrl + 'money/accounts/' + accountId + '/timepoints');
+  }
+
+  updateTimepoints(dates: number[], accountId: string): Observable<Timepoint[]> {
+    return this.http.post<Timepoint[]>(this.baseUrl + 'money/accounts/' + accountId + '/timepoints', {
+      dates
+    });
   }
 
 }

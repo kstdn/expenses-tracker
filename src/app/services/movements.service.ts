@@ -23,7 +23,7 @@ export class MovementsService {
 
   balanceState: EntityState<number> = {
     status: LoadingStatus.Idle,
-    item: 0,
+    item: undefined,
   };
 
   constructor(private serverService: ServerService) {}

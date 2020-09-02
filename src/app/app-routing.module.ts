@@ -13,11 +13,11 @@ const routes: Routes = [
     path: 'accounts', component: AccountsComponent, pathMatch: 'full'
   },
   {
-    path: 'accounts/:id/:currency', component: MoneyMovementsComponent,
+    path: 'accounts/:id/timepoints',
+    loadChildren: () => import('./modules/timepoints/timepoints.module').then(m => m.TimepointsModule),
   },
   {
-    path: 'timepoints',
-    loadChildren: () => import('./modules/timepoints/timepoints.module').then(m => m.TimepointsModule),
+    path: 'accounts/:id/:currency', component: MoneyMovementsComponent,
   },
   {
     path: 'help', component: HelpComponent,

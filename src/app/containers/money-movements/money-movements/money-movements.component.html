@@ -2,8 +2,8 @@
 
 <loader *ngIf="isLoading"></loader>
 
-<ng-container *ngIf="isResolved">
-  <div class="money-movement-groups-container">
+<div class="money-movement-groups-container">
+  <ng-container *ngIf="isResolved">
     <ng-container
       *ngFor="
         let movementGroup of state.item | keyvalue;
@@ -21,21 +21,21 @@
       >
       </money-movement-group>
     </ng-container>
-  </div>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="isResolvedNotFound">
-  <div class="money-movement-groups-container">
-    No money movements found for this period
-  </div>
-</ng-container>
+  <ng-container *ngIf="isResolvedNotFound">
+    <div class="not-found-message-container">
+      No money movements found for this period
+    </div>
+  </ng-container>
 
-<ng-container *ngIf="isRejected">
-  <div class="money-movement-groups-container">There has been an error</div>
-</ng-container>
+  <ng-container *ngIf="isRejected">
+    <div class="error-message-container">There has been an error</div>
+  </ng-container>
+</div>
 
 <div class="btns">
-    <div class="flex-divider"></div>
-    <balance-tile [accountId]="accountId" [currency]="currency"></balance-tile>
-    <button class="btn primary" (click)="addMovement()">Add</button>
+  <div class="flex-divider"></div>
+  <balance-tile [accountId]="accountId" [currency]="currency"></balance-tile>
+  <button class="btn primary" (click)="addMovement()">Add</button>
 </div>

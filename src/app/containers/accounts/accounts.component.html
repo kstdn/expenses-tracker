@@ -6,7 +6,8 @@
       <div class="account-row" [routerLink]="[account.id, account.currency]">
         <span class="big-text">{{ account.name }}</span>
         <div class="flex-divider"></div>
-        <div class="edit-btn-container">
+        <div class="btns edit-btn-container">
+          <button class="btn primary" (click)="openTimepoints(account, $event)"><fa-icon icon="calendar-alt"></fa-icon></button>
           <button class="btn primary" (click)="editAccount(account, $event)">Edit</button>
         </div>
       </div>

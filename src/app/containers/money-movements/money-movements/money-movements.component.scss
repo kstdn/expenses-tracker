@@ -5,6 +5,10 @@
     overflow: auto;
 }
 
+loader {
+  height: 100%;
+}
+
 month-picker {
     padding: 16px;
 }
@@ -13,6 +17,14 @@ month-picker {
     flex: 1;
     overflow: auto;
     padding: 0 16px;
+}
+
+.not-found-message-container,
+.error-message-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btns {

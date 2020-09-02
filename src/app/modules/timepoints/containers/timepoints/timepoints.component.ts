@@ -1,30 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import * as fromStore from '../../store'; 
-import { AutoUnsubscribe, takeWhileAlive } from 'take-while-alive';
-import { tap } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { tap } from "rxjs/operators";
+import { ServerService } from "src/app/services/server.service";
+import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
 
 @Component({
-  templateUrl: './timepoints.component.html',
-  styleUrls: ['./timepoints.component.scss']
+  templateUrl: "./timepoints.component.html",
+  styleUrls: ["./timepoints.component.scss"],
 })
 @AutoUnsubscribe()
 export class TimepointsComponent implements OnInit {
-
-  timepointOptions = Array.from(Array(31).keys()).map(k => k+1);
+  timepointOptions = Array.from(Array(31).keys()).map((k) => k + 1);
 
   selectedTimepoints: number[] = [];
 
   constructor(
-    private store: Store<fromStore.TimepointsState>
-  ) { }
+    private serverService: ServerService,
+    private activatedRoute: ActivatedRoute
+  ) {}
+
+  get accountId() {
+    return this.activatedRoute.snapshot.paramMap.get("id");
+  }
 
   ngOnInit() {
-    this.store.select(fromStore.selectTimepoints)
+    this.serverService
+      .getTimepoints(this.accountId)
       .pipe(
         takeWhileAlive(this),
-        tap(timepoints => this.selectedTimepoints = timepoints)
-      ).subscribe();
+        tap(
+          (timepoints) =>
+            (this.selectedTimepoints = timepoints.map((tp) => tp.date))
+        )
+      )
+      .subscribe();
   }
 
   isSelected(number: number) {
@@ -32,14 +41,16 @@ export class TimepointsComponent implements OnInit {
   }
 
   toggle(number: number) {
-    if(this.isSelected(number)) {
-      this.selectedTimepoints = this.selectedTimepoints.filter(n => n !== number);
+    if (this.isSelected(number)) {
+      this.selectedTimepoints = this.selectedTimepoints.filter(
+        (n) => n !== number
+      );
     } else {
-      this.selectedTimepoints = [
-        ...this.selectedTimepoints,
-        number
-      ]
+      this.selectedTimepoints = [...this.selectedTimepoints, number];
     }
-  }
 
+    this.serverService
+      .updateTimepoints(this.selectedTimepoints, this.accountId)
+      .subscribe();
+  }
 }

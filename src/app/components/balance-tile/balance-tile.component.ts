@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Currency } from "dinero.js";
+import { formatMoney } from 'src/app/helpers/util';
+import { LoadingStatus } from 'src/app/models/EntityStatus';
 import { DialogsService } from "src/app/services/dialogs.service";
 import { MovementsService } from "src/app/services/movements.service";
 import { AutoUnsubscribe } from "take-while-alive";
-import { LoadingStatus } from 'src/app/models/EntityStatus';
-import { formatMoney } from 'src/app/helpers/util';
 
 @Component({
   selector: "balance-tile",
@@ -12,7 +12,7 @@ import { formatMoney } from 'src/app/helpers/util';
   styleUrls: ["./balance-tile.component.scss"],
 })
 @AutoUnsubscribe()
-export class BalanceTileComponent implements OnInit {
+export class BalanceTileComponent {
   @Input() accountId: string;
   @Input() currency: Currency;
 
@@ -21,7 +21,7 @@ export class BalanceTileComponent implements OnInit {
   };
 
   get currentBalanceFormatted(): string {
-    return formatMoney(this.currentBalance, this.currency);
+    return this.currentBalance && formatMoney(this.currentBalance, this.currency);
   };
 
   get loading(): boolean {
@@ -32,8 +32,6 @@ export class BalanceTileComponent implements OnInit {
     private dialogsService: DialogsService,
     private movementsService: MovementsService
   ) {}
-
-  ngOnInit() { }
 
   enterNewBalance() {
     this.dialogsService.openBalanceUpdate(
