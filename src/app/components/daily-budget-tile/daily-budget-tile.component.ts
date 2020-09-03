@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Currency } from "dinero.js";
+import { combineLatest } from 'rxjs';
 import { tap } from "rxjs/operators";
 import { formatMoney } from "src/app/helpers/util";
-import { MovementsService } from "src/app/services/movements.service";
+import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
 import { getDailyBudgetAmount, getRemainingDays } from "./util";
-import { forkJoin, merge, combineLatest } from 'rxjs';
 
 @Component({
   selector: "daily-budget-tile",
@@ -32,18 +32,18 @@ export class DailyBudgetTileComponent implements OnInit {
       : "";
   }
 
-  constructor(private movementsService: MovementsService) {}
+  constructor(private state: State) {}
 
   ngOnInit() {
     combineLatest(
-      this.movementsService.timepointsState$,
-      this.movementsService.balanceState$,
+      this.state.timepointsState$,
+      this.state.balanceState$,
     ).pipe(
         tap(([timepointsState, balanceState]) => {
-          this.remainingDays = getRemainingDays(timepointsState.items, new Date());
+          this.remainingDays = getRemainingDays(timepointsState.values, new Date());
           this.dailyBudgetAmount = getDailyBudgetAmount(
             this.remainingDays,
-            balanceState.item,
+            balanceState.value,
           );
         }),
         takeWhileAlive(this)

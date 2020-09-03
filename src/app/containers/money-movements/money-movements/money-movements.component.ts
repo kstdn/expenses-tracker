@@ -5,7 +5,7 @@ import { tap } from "rxjs/operators";
 import { hasOnlyOneGroup } from "src/app/helpers/util";
 import { LoadingStatus } from "src/app/models/EntityStatus";
 import { DialogsService } from "src/app/services/dialogs.service";
-import { MovementsService } from "src/app/services/movements.service";
+import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
 import { DateInterval } from "../../../components/shared/month-picker/DateInterval";
 
@@ -18,24 +18,24 @@ export class MoneyMovementsComponent {
 
   @ViewChild('moneyMovementsGroupContainer', { static: false }) moneyMovementsGroupContainer: ElementRef<HTMLDivElement>;
 
-  get state() {
-    return this.movementsService.movementsState;
+  get movementsState() {
+    return this.state.movementsState$.value;
   }
 
   get isLoading() {
-    return this.state.status === LoadingStatus.Loading;
+    return this.movementsState.status === LoadingStatus.Loading;
   }
 
   get isResolved() {
-    return this.state.status === LoadingStatus.Resolved;
+    return this.movementsState.status === LoadingStatus.Resolved;
   }
 
   get isResolvedNotFound() {
-    return this.state.status === LoadingStatus.ResolvedNotFound;
+    return this.movementsState.status === LoadingStatus.ResolvedNotFound;
   }
 
   get isRejected() {
-    return this.state.status === LoadingStatus.Rejected;
+    return this.movementsState.status === LoadingStatus.Rejected;
   }
 
   hasOnlyOneGroup = hasOnlyOneGroup;
@@ -43,15 +43,15 @@ export class MoneyMovementsComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private dialogsService: DialogsService,
-    private movementsService: MovementsService,
+    private state: State,
   ) {}
 
   ngOnInit() {
-    this.movementsService.loadAccountData$(this.accountId).subscribe();
+    this.state.loadAccountData$(this.accountId).subscribe();
   }
 
   reloadMoneyMovements(interval: DateInterval) {
-    this.movementsService.loadMovements$(interval, this.accountId)
+    this.state.loadMovements$(interval, this.accountId)
       .pipe(
         tap(() => {
           setTimeout(() => {

@@ -3,7 +3,7 @@ import { Currency } from "dinero.js";
 import { formatMoney } from 'src/app/helpers/util';
 import { LoadingStatus } from 'src/app/models/EntityStatus';
 import { DialogsService } from "src/app/services/dialogs.service";
-import { MovementsService } from "src/app/services/movements.service";
+import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe } from "take-while-alive";
 
 @Component({
@@ -17,7 +17,7 @@ export class BalanceTileComponent {
   @Input() currency: Currency;
 
   get currentBalance(): number {
-    return this.movementsService.balanceState$.value.item;
+    return this.state.balanceState$.value.value;
   };
 
   get currentBalanceFormatted(): string {
@@ -25,12 +25,12 @@ export class BalanceTileComponent {
   };
 
   get loading(): boolean {
-    return this.movementsService.balanceState$.value.status === LoadingStatus.Loading;
+    return this.state.balanceState$.value.status === LoadingStatus.Loading;
   };
 
   constructor(
     private dialogsService: DialogsService,
-    private movementsService: MovementsService
+    private state: State
   ) {}
 
   enterNewBalance() {

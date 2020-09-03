@@ -6,7 +6,7 @@
   <ng-container *ngIf="isResolved">
     <ng-container
       *ngFor="
-        let movementGroup of state.item | keyvalue;
+        let movementGroup of movementsState.value | keyvalue;
         first as isFirst;
         last as isLast
       "
@@ -17,7 +17,7 @@
         [timestamp]="movementGroup.key"
         [isFirst]="isFirst"
         [isLast]="isLast"
-        [isOnly]="hasOnlyOneGroup(state.item)"
+        [isOnly]="hasOnlyOneGroup(movementsState.value)"
       >
       </money-movement-group>
     </ng-container>

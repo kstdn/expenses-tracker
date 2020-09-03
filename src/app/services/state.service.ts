@@ -24,25 +24,25 @@ import { ServerService } from "./server.service";
 @Injectable({
   providedIn: "root",
 })
-export class MovementsService {
+export class State {
   interval: DateInterval;
   groupBy: keyof MoneyMovement = "timestamp";
 
-  movementsState: EntityState<MoneyMovementGroups> = {
+  movementsState$: BehaviorSubject<EntityState<MoneyMovementGroups>> = new BehaviorSubject({
     status: LoadingStatus.Idle,
-    item: {},
-  };
+    value: {},
+  });
 
   balanceState$: BehaviorSubject<EntityState<number>> = new BehaviorSubject({
     status: LoadingStatus.Idle,
-    item: undefined,
+    value: undefined,
   });
 
   timepointsState$: BehaviorSubject<
     EntityCollectionState<Timepoint>
   > = new BehaviorSubject({
     status: CollectionLoadingStatus.Idle,
-    items: [],
+    values: [],
   });
 
   constructor(private serverService: ServerService) {}
@@ -60,23 +60,32 @@ export class MovementsService {
 
   loadMovements$(interval: DateInterval, accountId: string) {
     this.interval = interval;
-    this.movementsState.status = LoadingStatus.Loading;
+    this.movementsState$.next({
+      ...this.movementsState$.value,
+      status: LoadingStatus.Loading,
+    })
     return this.serverService.getAllMovements(accountId, interval).pipe(
       map((data) => data.items),
       tap((data) => {
         if (data.length === 0) {
-          this.movementsState.status = LoadingStatus.ResolvedNotFound;
-          this.movementsState.item = {};
+          this.movementsState$.next({
+            ...this.movementsState$.value,
+            status: LoadingStatus.ResolvedNotFound,
+            value: {},
+          })
         } else {
-          this.movementsState.status = LoadingStatus.Resolved;
+          this.movementsState$.next({
+            ...this.movementsState$.value,
+            status: LoadingStatus.Resolved,
+            value: groupMovementsBy(data, "timestamp"),
+          })
         }
       }),
-      map(
-        (data) =>
-          (this.movementsState.item = groupMovementsBy(data, "timestamp"))
-      ),
       catchError((e) => {
-        this.movementsState.status = LoadingStatus.Rejected;
+        this.movementsState$.next({
+          ...this.movementsState$.value,
+          status: LoadingStatus.Rejected,
+        })
         return throwError(e);
       })
     );
@@ -86,7 +95,7 @@ export class MovementsService {
     return this.serverService.addMovement(movement).pipe(
       tap((created) => {
         addToExistingGroupOrCreate(
-          this.movementsState.item,
+          this.movementsState$.value.value,
           this.groupBy,
           created
         );
@@ -100,13 +109,13 @@ export class MovementsService {
       tap((updatedMovement) => {
         if (isInInterval(updatedMovement, this.interval)) {
           updateInGroup(
-            this.movementsState.item,
+            this.movementsState$.value.value,
             this.groupBy,
             updatedMovement
           );
         } else {
           removeFromGroup(
-            this.movementsState.item,
+            this.movementsState$.value.value,
             this.groupBy,
             updatedMovement
           );
@@ -119,7 +128,7 @@ export class MovementsService {
   deleteMovement$(movement: MoneyMovement): Observable<void> {
     return this.serverService.deleteMovement(movement.id).pipe(
       tap(() => {
-        removeFromGroup(this.movementsState.item, this.groupBy, movement);
+        removeFromGroup(this.movementsState$.value.value, this.groupBy, movement);
       }),
       mergeMap(() => this.loadBalance$(movement.accountId))
     );
@@ -134,7 +143,7 @@ export class MovementsService {
       tap((balance) => {
         this.balanceState$.next({
           ...this.balanceState$.value,
-          item: balance,
+          value: balance,
           status: LoadingStatus.Resolved,
         });
       }),
@@ -158,7 +167,7 @@ export class MovementsService {
       tap((timepoints) => {
         this.timepointsState$.next({
           ...this.timepointsState$.value,
-          items: timepoints,
+          values: timepoints,
           status: timepoints.length
             ? CollectionLoadingStatus.Resolved
             : CollectionLoadingStatus.ResolvedEmpty,

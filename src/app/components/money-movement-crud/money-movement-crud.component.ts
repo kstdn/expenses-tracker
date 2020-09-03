@@ -7,7 +7,7 @@ import { finalize } from "rxjs/operators";
 import { Messages } from "src/app/constants/Messages";
 import { Money } from "src/app/helpers/util";
 import { MoneyMovement } from "src/app/models/MoneyMovement";
-import { MovementsService } from "src/app/services/movements.service";
+import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
 import { CreateMoneyMovementDto } from "../../models/dto/create-money-movement.dto";
 
@@ -49,7 +49,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-    private movementsService: MovementsService,
+    private state: State,
     private snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
     public builder: FormBuilder,
@@ -104,7 +104,7 @@ export class MoneyMovementCrudComponent implements OnInit {
         ...collectInputs(this.form),
         accountId: this.input.accountId,
       } as CreateMoneyMovementDto;
-      this.movementsService
+      this.state
         .addMovement$(movement)
         .pipe(
           takeWhileAlive(this),
@@ -115,7 +115,7 @@ export class MoneyMovementCrudComponent implements OnInit {
         ...this.input.movement,
         ...collectInputs(this.form),
       };
-      this.movementsService
+      this.state
         .updateMovement$(updatedMovement)
         .pipe(
           takeWhileAlive(this),
@@ -125,7 +125,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 
   submitDelete() {
-    this.movementsService.deleteMovement$(this.input.movement).subscribe({
+    this.state.deleteMovement$(this.input.movement).subscribe({
       next: () => {
         this.snackBar.open(Messages.Deleted);
         this.remove();

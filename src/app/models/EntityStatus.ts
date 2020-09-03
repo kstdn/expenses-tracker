@@ -1,12 +1,12 @@
 export interface EntityState<T> {
   status: LoadingStatus;
-  item: T;
+  value: T;
   error?: string;
 }
 
 export interface EntityCollectionState<T> {
   status: CollectionLoadingStatus;
-  items: T[];
+  values: T[];
   error?: string;
 }
 

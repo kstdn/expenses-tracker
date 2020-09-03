@@ -4,7 +4,7 @@ import { Currency } from 'dinero.js';
 import { finalize } from 'rxjs/operators';
 import { formatMoney, Money } from 'src/app/helpers/util';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
-import { MovementsService } from 'src/app/services/movements.service';
+import { State } from 'src/app/services/state.service';
 import { AutoUnsubscribe } from 'take-while-alive';
 import { CreateMoneyMovementDto } from '../../models/dto/create-money-movement.dto';
 
@@ -32,7 +32,7 @@ export class BalanceUpdateComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<BalanceUpdateComponent>,
-    private movementsService: MovementsService,
+    private state: State,
     @Optional() @Inject(MAT_DIALOG_DATA) public input: BalanceUpdateComponentInput
   ) { }
 
@@ -71,7 +71,7 @@ export class BalanceUpdateComponent implements OnInit {
 
     this.loading = true;
 
-    this.movementsService.addMovement$(movement)
+    this.state.addMovement$(movement)
       .pipe(
         finalize(() => this.remove())
       ).subscribe();
