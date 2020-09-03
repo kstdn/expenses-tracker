@@ -22,7 +22,7 @@
         </mat-form-field>
 
         <div class="amount-row">
-            <amount-input [initialAmount]="getInitialAmount()" (moneyChanged)="onMoneyChanged($event)"></amount-input>
+            <amount-input [initialAmount]="getInitialAmount()" [negateAmount]="isNegative()" (moneyChanged)="onMoneyChanged($event)"></amount-input>
         </div>
 
         <mat-form-field class="single-line">

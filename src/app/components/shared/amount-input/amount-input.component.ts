@@ -1,15 +1,21 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Precision } from 'src/app/helpers/Constants';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+} from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Precision } from "src/app/helpers/Constants";
 
 @Component({
-  selector: 'amount-input',
-  templateUrl: './amount-input.component.html',
-  styleUrls: ['./amount-input.component.scss']
+  selector: "amount-input",
+  templateUrl: "./amount-input.component.html",
+  styleUrls: ["./amount-input.component.scss"],
 })
 export class AmountInputComponent {
-
   @Input() initialAmount: number;
+  @Input() negateAmount: boolean;
   @Output() moneyChanged = new EventEmitter<number>();
 
   form: FormGroup;
@@ -19,27 +25,28 @@ export class AmountInputComponent {
 
   ngOnInit() {
     this.form = new FormGroup({
-      'amountWholePart': new FormControl(this.amountWholePart),
-      'amountDecimalPart': new FormControl(this.amountDecimalPart)
-    })
+      amountWholePart: new FormControl(this.amountWholePart),
+      amountDecimalPart: new FormControl(this.amountDecimalPart),
+    });
 
-    this.form.controls.amountWholePart.valueChanges
-      .subscribe(value => {
-        this.amountWholePartChanged(value);
-      });
+    this.form.controls.amountWholePart.valueChanges.subscribe((value) => {
+      this.amountWholePartChanged(value);
+    });
 
-    this.form.controls.amountDecimalPart.valueChanges
-      .subscribe(value => {
-        this.amountDecimalPartChanged(value);
-      });
+    this.form.controls.amountDecimalPart.valueChanges.subscribe((value) => {
+      this.amountDecimalPartChanged(value);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.initialAmount && changes.initialAmount.isFirstChange) {
       this.initialAmount = this.initialAmount || 0;
-      const amountWholePart = this.initialAmount / (Math.pow(10, Precision))
+      if (this.negateAmount) this.initialAmount = this.initialAmount * -1;
+      const amountWholePart = this.initialAmount / Math.pow(10, Precision);
       this.amountWholePart = Math.floor(amountWholePart);
-      this.amountDecimalPart = Math.abs(this.initialAmount % (Math.pow(10, Precision)));
+      this.amountDecimalPart = Math.abs(
+        this.initialAmount % Math.pow(10, Precision)
+      );
     }
   }
 
@@ -55,22 +62,21 @@ export class AmountInputComponent {
 
   processInputChange() {
     const amountWholePart = this.amountWholePart;
-    const sum = (amountWholePart * Math.pow(10, Precision)) + this.amountDecimalPart;
+    const sum =
+      amountWholePart * Math.pow(10, Precision) + this.amountDecimalPart;
 
     if (this.isValid()) {
-      this.moneyChanged.emit(sum)
+      this.moneyChanged.emit(sum);
     } else {
-      this.moneyChanged.emit(null)
+      this.moneyChanged.emit(null);
     }
   }
 
   isValid() {
-    return this.amountDecimalPart < 100
-      && this.amountDecimalPart >= 0;
+    return this.amountDecimalPart < 100 && this.amountDecimalPart >= 0;
   }
 
   onFocus($event: FocusEvent) {
     ($event.target as HTMLInputElement).select();
   }
-
 }
