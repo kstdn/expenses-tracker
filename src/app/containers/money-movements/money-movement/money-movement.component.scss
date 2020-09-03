@@ -9,10 +9,14 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    
+
     .details {
         width: calc(50% - 16px);
         padding: 0 16px;
+
+        .description {
+          color: #808094;
+        }
     }
 
     &.minus {

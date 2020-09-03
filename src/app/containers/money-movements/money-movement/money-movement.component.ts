@@ -36,6 +36,10 @@ export class MoneyMovementComponent implements OnInit, OnChanges {
     return Money(this.movement.amount, this.currency).isNegative();
   }
 
+  get description() {
+    return this.movement.description;
+  }
+
   openUpdateMovementDialog() {
     this.dialogsService.openMovementCrud(this.currency, this.movement);
   }
