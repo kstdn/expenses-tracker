@@ -38,7 +38,7 @@ export const getNextTimepoint = (timepoints: Timepoint[]) => {
 export const getRemainingDays = (timepoints: Timepoint[], relativeTo: Date) => {
   if(timepoints.length === 0) return;
   const nextTimepoint = getNextTimepoint(timepoints);
-  return differenceInDays(nextTimepoint, relativeTo) + 1;
+  return differenceInDays(nextTimepoint, startOfDay(relativeTo)) + 1;
 }
 
 export const getDailyBudgetAmount = (
