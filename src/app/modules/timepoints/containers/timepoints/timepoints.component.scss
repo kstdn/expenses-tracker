@@ -5,7 +5,16 @@
     flex-direction: column;
     flex: 1;
     overflow: auto;
-    margin: 16px;
+    margin: 0 16px 16px;
+}
+
+.timepoints-header {
+  padding: 22px 0;
+  border-bottom: 1px solid $primary;
+}
+
+.description {
+  padding: 22px 0;
 }
 
 .timepoint-picker-container {
