@@ -4,6 +4,7 @@ import { MoneyMovementsComponent } from './containers/money-movements/money-move
 import { HelpComponent } from './containers/help/help/help.component';
 import { LoginComponent } from './containers/login/login.component';
 import { AccountsComponent } from './containers/accounts/accounts.component';
+import { CategoriesComponent } from './containers/categories/categories.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,9 @@ const routes: Routes = [
   },
   {
     path: 'accounts', component: AccountsComponent, pathMatch: 'full'
+  },
+  {
+    path: 'accounts/:id/categories', component: CategoriesComponent,
   },
   {
     path: 'accounts/:id/timepoints',

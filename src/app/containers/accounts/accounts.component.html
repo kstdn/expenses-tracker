@@ -1,17 +1,24 @@
+<div class="accounts-header big-text">Accounts</div>
+
 <loader *ngIf="loading"></loader>
 
 <div *ngIf="!loading" class="accounts-container">
-  <ng-container *ngIf="accounts">
-    <ng-container *ngFor="let account of accounts">
-      <div class="account-row" [routerLink]="[account.id, account.currency]">
-        <span class="big-text">{{ account.name }}</span>
-        <div class="flex-divider"></div>
-        <div class="btns edit-btn-container">
-          <button class="btn primary" (click)="openTimepoints(account, $event)"><fa-icon icon="calendar-alt"></fa-icon></button>
-          <button class="btn primary" (click)="editAccount(account, $event)">Edit</button>
-        </div>
+  <ng-container *ngFor="let account of accounts">
+    <div class="account-row" [routerLink]="[account.id, account.currency]">
+      <span class="medium-text">{{ account.name }}</span>
+      <div class="flex-divider"></div>
+      <div class="btns edit-btn-container">
+        <button class="btn primary" (click)="openCategories(account, $event)">
+          <fa-icon icon="th-list"></fa-icon>
+        </button>
+        <button class="btn primary" (click)="openTimepoints(account, $event)">
+          <fa-icon icon="calendar-alt"></fa-icon>
+        </button>
+        <button class="btn primary" (click)="editAccount(account, $event)">
+          Edit
+        </button>
       </div>
-    </ng-container>
+    </div>
   </ng-container>
 </div>
 <div class="btns summary">

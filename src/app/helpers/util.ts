@@ -34,7 +34,7 @@ const getGroupBy = (
   movement: MoneyMovement,
   groupByProp: keyof MoneyMovement
 ) => {
-  if (groupByProp === "amount" || groupByProp === "type") return;
+  if (groupByProp === "amount" || groupByProp === "type" || groupByProp === "category") return;
 
   let groupBy: string;
   if (groupByProp === "timestamp") {

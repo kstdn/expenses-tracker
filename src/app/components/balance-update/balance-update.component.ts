@@ -6,7 +6,7 @@ import { formatMoney, Money } from 'src/app/helpers/util';
 import { MoneyMovementType } from 'src/app/models/MoneyMovementType';
 import { State } from 'src/app/services/state.service';
 import { AutoUnsubscribe } from 'take-while-alive';
-import { CreateMoneyMovementDto } from '../../models/dto/create-money-movement.dto';
+import { CreateMoneyMovementDto } from '../../models/dto/money-movement.dto';
 
 type BalanceUpdateComponentInput = {
   currentBalance: number,

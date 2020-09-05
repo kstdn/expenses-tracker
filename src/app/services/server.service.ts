@@ -4,10 +4,12 @@ import { Observable } from 'rxjs';
 import { DateInterval } from '../components/shared/month-picker/DateInterval';
 import { Account } from '../models/Account';
 import { CreateAccountDto } from '../models/dto/create-account.dto';
-import { CreateMoneyMovementDto } from '../models/dto/create-money-movement.dto';
+import { CreateMoneyMovementDto, UpdateMoneyMovementDto } from '../models/dto/money-movement.dto';
 import { MoneyMovement } from '../models/MoneyMovement';
 import { Paginated } from '../models/Paginated';
 import { Timepoint } from '../models/Timepoint';
+import { Category } from '../models/Category';
+import { CreateCategoryDto, UpdateCategoryDto } from '../models/dto/create-category.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +61,7 @@ export class ServerService {
     return this.http.post<MoneyMovement>(this.baseUrl + 'money/movements', movement);
   }
 
-  updateMovement(movement: MoneyMovement): Observable<MoneyMovement> {
+  updateMovement(movement: UpdateMoneyMovementDto): Observable<MoneyMovement> {
     return this.http.patch<MoneyMovement>(this.baseUrl + 'money/movements/' + movement.id, movement);
   }
 
@@ -79,6 +81,22 @@ export class ServerService {
     return this.http.post<Timepoint[]>(this.baseUrl + 'money/accounts/' + accountId + '/timepoints', {
       dates
     });
+  }
+
+  getAllCategories(accountId: string): Observable<Category[]> {
+    return this.http.get<Category[]>(this.baseUrl + 'money/accounts/' + accountId + '/categories');
+  }
+
+  addCategory(category: CreateCategoryDto, accountId: string): Observable<Category> {
+    return this.http.post<Category>(this.baseUrl + 'money/accounts/' + accountId + '/categories', category);
+  }
+
+  updateCategory(id: string, category: UpdateCategoryDto, accountId: string): Observable<Category> {
+    return this.http.patch<Category>(this.baseUrl + 'money/accounts/' + accountId + '/categories/' + id, category);
+  }
+
+  deleteCategory(id: string, accountId: string): Observable<void> {
+    return this.http.delete<void>(this.baseUrl + 'money/accounts/' + accountId + '/categories/' + id);
   }
 
 }

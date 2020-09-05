@@ -1,4 +1,5 @@
 import { MoneyMovementType } from './MoneyMovementType';
+import { Category } from './Category';
 
 export interface MoneyMovement {
     id?: string;
@@ -7,4 +8,5 @@ export interface MoneyMovement {
     timestamp: Date;
     type: MoneyMovementType;
     description? : string;
+    category: Category;
 }

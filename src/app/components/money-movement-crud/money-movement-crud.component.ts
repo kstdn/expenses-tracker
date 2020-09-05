@@ -9,7 +9,7 @@ import { Money } from "src/app/helpers/util";
 import { MoneyMovement } from "src/app/models/MoneyMovement";
 import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
-import { CreateMoneyMovementDto } from "../../models/dto/create-money-movement.dto";
+import { CreateMoneyMovementDto, UpdateMoneyMovementDto } from "../../models/dto/money-movement.dto";
 
 type MoneyMovementCrudInput = {
   movement: MoneyMovement;
@@ -63,6 +63,7 @@ export class MoneyMovementCrudComponent implements OnInit {
       amount: [0, Validators.min(1)],
       timestamp: [new Date(), Validators.required],
       description: "",
+      categoryId: "",
     });
 
     if (this.input.movement) {
@@ -77,6 +78,7 @@ export class MoneyMovementCrudComponent implements OnInit {
         Money(this.input.movement.amount, this.input.currency).isNegative() ? 0 : 1
       );
       this.form.controls.description.setValue(this.input.movement.description);
+      this.form.controls.categoryId.setValue(this.input.movement.category.id);
 
       this.deleteButtonVisible = true;
     }
@@ -100,10 +102,10 @@ export class MoneyMovementCrudComponent implements OnInit {
 
   submit() {
     if (!this.input.movement) {
-      const movement = {
+      const movement: CreateMoneyMovementDto = {
         ...collectInputs(this.form),
         accountId: this.input.accountId,
-      } as CreateMoneyMovementDto;
+      };
       this.state
         .addMovement$(movement)
         .pipe(
@@ -111,7 +113,7 @@ export class MoneyMovementCrudComponent implements OnInit {
           finalize(() => this.remove()),
         ).subscribe();
     } else {
-      const updatedMovement: MoneyMovement = {
+      const updatedMovement: UpdateMoneyMovementDto = {
         ...this.input.movement,
         ...collectInputs(this.form),
       };
@@ -150,7 +152,7 @@ export class MoneyMovementCrudComponent implements OnInit {
   }
 }
 
-const collectInputs = (form: FormGroup): Partial<CreateMoneyMovementDto> => {
+const collectInputs = (form: FormGroup): CreateMoneyMovementDto | UpdateMoneyMovementDto => {
   const isNegative = form.controls.directionId.value === 0;
   const multiplier = isNegative ? -1 : 1;
 
@@ -159,5 +161,6 @@ const collectInputs = (form: FormGroup): Partial<CreateMoneyMovementDto> => {
     timestamp: form.controls.timestamp.value,
     type: form.controls.typeId.value,
     description: form.controls.description.value,
+    categoryId: form.controls.categoryId.value,
   };
 };

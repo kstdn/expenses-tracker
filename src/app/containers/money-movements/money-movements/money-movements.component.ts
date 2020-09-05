@@ -38,6 +38,14 @@ export class MoneyMovementsComponent {
     return this.movementsState.status === LoadingStatus.Rejected;
   }
 
+  get accountId() {
+    return this.activatedRoute.snapshot.paramMap.get("id");
+  }
+
+  get currency(): Currency {
+    return this.activatedRoute.snapshot.paramMap.get("currency") as Currency;
+  }
+
   hasOnlyOneGroup = hasOnlyOneGroup;
 
   constructor(
@@ -64,14 +72,6 @@ export class MoneyMovementsComponent {
         takeWhileAlive(this)
       )
       .subscribe();
-  }
-
-  get accountId() {
-    return this.activatedRoute.snapshot.paramMap.get("id");
-  }
-
-  get currency(): Currency {
-    return this.activatedRoute.snapshot.paramMap.get("currency") as Currency;
   }
 
   onIntervalChange(interval: DateInterval) {

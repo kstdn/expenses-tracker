@@ -6,6 +6,8 @@ import { BalanceUpdateComponent } from '../components/balance-update/balance-upd
 import { Account } from '../models/Account';
 import { AccountCrudComponent } from '../components/account-crud/account-crud.component';
 import { Currency } from 'dinero.js';
+import { CategoryCrudComponent } from '../components/category-crud/category-crud.component';
+import { Category } from '../models/Category';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +22,16 @@ export class DialogsService {
     return this.dialog.open(AccountCrudComponent, {
       width: '450px',
       data: account
+    });
+  }
+
+  openCategoryCrud(category?: Category, accountId?: string) {
+    return this.dialog.open(CategoryCrudComponent, {
+      width: '450px',
+      data: {
+        category,
+        accountId,
+      }
     });
   }
 

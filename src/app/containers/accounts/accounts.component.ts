@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class AccountsComponent implements OnInit {
 
-  accounts: Account[];
+  accounts: Account[] = [];
   loading = false;
 
   constructor(
@@ -40,6 +40,11 @@ export class AccountsComponent implements OnInit {
         this.reload();
       }
     });
+  }
+
+  openCategories(account: Account, $event: MouseEvent): void {
+    $event.stopPropagation();
+    this.router.navigate(['accounts', account.id, 'categories']);
   }
 
   openTimepoints(account: Account, $event: MouseEvent): void {

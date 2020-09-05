@@ -41,6 +41,8 @@ import { AccountsComponent } from './containers/accounts/accounts.component';
 import { AccountCrudComponent } from './components/account-crud/account-crud.component';
 import { RefreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 import { DailyBudgetTileComponent } from './components/daily-budget-tile/daily-budget-tile.component';
+import { CategoriesComponent } from './containers/categories/categories.component';
+import { CategoryCrudComponent } from './components/category-crud/category-crud.component';
 
 @NgModule({
   declarations: [
@@ -62,11 +64,14 @@ import { DailyBudgetTileComponent } from './components/daily-budget-tile/daily-b
     LoginComponent,
     AccountsComponent,
     DailyBudgetTileComponent,
+    CategoriesComponent,
+    CategoryCrudComponent,
   ],
   entryComponents: [
     MoneyMovementCrudComponent,
     AccountCrudComponent,
-    BalanceUpdateComponent
+    CategoryCrudComponent,
+    BalanceUpdateComponent,
   ],
   imports: [
     BrowserModule,

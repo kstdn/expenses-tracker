@@ -1,0 +1,21 @@
+<div class="categories-header big-text">Categories</div>
+
+<loader *ngIf="loading"></loader>
+
+<div *ngIf="!loading" class="categories-container">
+  <ng-container *ngFor="let category of categories">
+    <div class="category-row">
+      <span class="medium-text">{{ category.name }}</span>
+      <div class="flex-divider"></div>
+      <div class="btns edit-btn-container">
+        <button class="btn primary" (click)="editCategory(category, $event)">
+          Edit
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<div class="btns summary">
+  <div class="flex-divider"></div>
+  <button class="btn primary" (click)="addCategory()">Add</button>
+</div>

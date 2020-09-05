@@ -9,7 +9,7 @@ import {
   removeFromGroup,
   updateInGroup,
 } from "../helpers/util";
-import { CreateMoneyMovementDto } from "../models/dto/create-money-movement.dto";
+import { CreateMoneyMovementDto, UpdateMoneyMovementDto } from "../models/dto/money-movement.dto";
 import {
   CollectionLoadingStatus,
   EntityCollectionState,
@@ -104,7 +104,7 @@ export class State {
     );
   }
 
-  updateMovement$(movement: MoneyMovement) {
+  updateMovement$(movement: UpdateMoneyMovementDto) {
     return this.serverService.updateMovement(movement).pipe(
       tap((updatedMovement) => {
         if (isInInterval(updatedMovement, this.interval)) {
