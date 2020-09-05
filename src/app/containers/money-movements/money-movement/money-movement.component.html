@@ -1,5 +1,7 @@
 <div class="movement" (click)="openUpdateMovementDialog()" [class.minus]="isNegative">
-    <div class="circle" [class.negative]="isNegative"></div>
+    <div class="circle" [class.negative]="isNegative">
+      <fa-icon *ngIf="sign" [icon]="sign" size="lg"></fa-icon>
+    </div>
     <div class="details">
       <div>{{ amount }}</div>
       <div class="description">{{ description }}</div>

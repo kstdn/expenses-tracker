@@ -36,6 +36,10 @@ export class MoneyMovementComponent implements OnInit, OnChanges {
     return Money(this.movement.amount, this.currency).isNegative();
   }
 
+  get sign() {
+    return this.movement.categorySign;
+  }
+
   get description() {
     return this.movement.description;
   }

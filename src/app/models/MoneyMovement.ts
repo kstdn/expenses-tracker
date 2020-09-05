@@ -8,6 +8,6 @@ export interface MoneyMovement {
     timestamp: Date;
     type: MoneyMovementType;
     description? : string;
-    category: Category;
+    categorySign: string;
     categoryId: string;
 }
