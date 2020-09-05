@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FaIconLibrary, FontAwesomeModule as FortAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendarAlt, faChevronLeft, faChevronRight, faQuestion, faUser, faWallet } from '@fortawesome/free-solid-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [],
@@ -13,13 +13,6 @@ import { faCalendarAlt, faChevronLeft, faChevronRight, faQuestion, faUser, faWal
 })
 export class FontAwesomeModule {
   constructor(library: FaIconLibrary) {
-    library.addIcons(
-      faChevronLeft,
-      faChevronRight,
-      faCalendarAlt,
-      faQuestion,
-      faUser,
-      faWallet,
-    )
+    library.addIconPacks(fas)
   }
 }
