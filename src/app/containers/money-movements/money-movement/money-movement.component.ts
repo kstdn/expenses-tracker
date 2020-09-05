@@ -41,7 +41,7 @@ export class MoneyMovementComponent implements OnInit, OnChanges {
   }
 
   openUpdateMovementDialog() {
-    this.dialogsService.openMovementCrud(this.currency, this.movement);
+    this.dialogsService.openMovementCrud(this.currency, this.movement, this.movement.accountId);
   }
 
 }

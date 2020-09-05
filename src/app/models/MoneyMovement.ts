@@ -9,4 +9,5 @@ export interface MoneyMovement {
     type: MoneyMovementType;
     description? : string;
     category: Category;
+    categoryId: string;
 }

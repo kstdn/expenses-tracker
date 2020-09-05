@@ -16,6 +16,11 @@ mat-form-field.amount-decimal-part {
     width: 50px;
 }
 
+loader {
+  height: 63px;
+  transform: scale(0.60);
+}
+
 .delete-confirmation-prompt-text {
     padding: 8px;
 }

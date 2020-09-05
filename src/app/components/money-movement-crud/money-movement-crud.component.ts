@@ -2,14 +2,19 @@ import { Component, Inject, OnInit, Optional } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Currency } from 'dinero.js';
+import { Currency } from "dinero.js";
 import { finalize } from "rxjs/operators";
 import { Messages } from "src/app/constants/Messages";
 import { Money } from "src/app/helpers/util";
 import { MoneyMovement } from "src/app/models/MoneyMovement";
 import { State } from "src/app/services/state.service";
 import { AutoUnsubscribe, takeWhileAlive } from "take-while-alive";
-import { CreateMoneyMovementDto, UpdateMoneyMovementDto } from "../../models/dto/money-movement.dto";
+import {
+  CreateMoneyMovementDto,
+  UpdateMoneyMovementDto,
+} from "../../models/dto/money-movement.dto";
+import { Category } from "src/app/models/Category";
+import { ServerService } from "src/app/services/server.service";
 
 type MoneyMovementCrudInput = {
   movement: MoneyMovement;
@@ -43,6 +48,8 @@ export class MoneyMovementCrudComponent implements OnInit {
     },
   ];
 
+  categoryOptions: Category[];
+
   deleteButtonVisible = false;
   deleteConfirmationPromptVisible = false;
 
@@ -51,8 +58,9 @@ export class MoneyMovementCrudComponent implements OnInit {
   constructor(
     private state: State,
     private snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
-    public builder: FormBuilder,
+    private dialogRef: MatDialogRef<MoneyMovementCrudComponent>,
+    private builder: FormBuilder,
+    private server: ServerService,
     @Optional() @Inject(MAT_DIALOG_DATA) public input: MoneyMovementCrudInput
   ) {}
 
@@ -67,21 +75,31 @@ export class MoneyMovementCrudComponent implements OnInit {
     });
 
     if (this.input.movement) {
-      this.form.controls.amount.setValue(
-        Math.abs(this.input.movement.amount)
-      );
+      this.form.controls.amount.setValue(Math.abs(this.input.movement.amount));
       this.form.controls.timestamp.setValue(
         new Date(this.input.movement.timestamp)
       );
       this.form.controls.typeId.setValue(this.input.movement.type);
       this.form.controls.directionId.setValue(
-        Money(this.input.movement.amount, this.input.currency).isNegative() ? 0 : 1
+        Money(this.input.movement.amount, this.input.currency).isNegative()
+          ? 0
+          : 1
       );
       this.form.controls.description.setValue(this.input.movement.description);
-      this.form.controls.categoryId.setValue(this.input.movement.category.id);
+      this.form.controls.categoryId.setValue(this.input.movement.categoryId);
 
       this.deleteButtonVisible = true;
     }
+
+    this.loadCategoryOptions();
+  }
+
+  loadCategoryOptions() {
+    this.server
+      .getAllCategories(this.input.accountId)
+      .subscribe((categoryOptions) => {
+        this.categoryOptions = categoryOptions;
+      });
   }
 
   getMode() {
@@ -110,8 +128,9 @@ export class MoneyMovementCrudComponent implements OnInit {
         .addMovement$(movement)
         .pipe(
           takeWhileAlive(this),
-          finalize(() => this.remove()),
-        ).subscribe();
+          finalize(() => this.remove())
+        )
+        .subscribe();
     } else {
       const updatedMovement: UpdateMoneyMovementDto = {
         ...this.input.movement,
@@ -121,8 +140,9 @@ export class MoneyMovementCrudComponent implements OnInit {
         .updateMovement$(updatedMovement)
         .pipe(
           takeWhileAlive(this),
-          finalize(() => this.remove()),
-        ).subscribe();
+          finalize(() => this.remove())
+        )
+        .subscribe();
     }
   }
 
@@ -150,9 +170,14 @@ export class MoneyMovementCrudComponent implements OnInit {
   remove() {
     this.dialogRef.close();
   }
+
+  compareCategories(categoryOne: string, categoryTwo: string) {
+    return categoryOne === categoryTwo }
 }
 
-const collectInputs = (form: FormGroup): CreateMoneyMovementDto | UpdateMoneyMovementDto => {
+const collectInputs = (
+  form: FormGroup
+): CreateMoneyMovementDto | UpdateMoneyMovementDto => {
   const isNegative = form.controls.directionId.value === 0;
   const multiplier = isNegative ? -1 : 1;
 
