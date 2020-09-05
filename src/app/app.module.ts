@@ -43,6 +43,7 @@ import { RefreshTokenInterceptor } from './interceptors/refresh-token.intercepto
 import { DailyBudgetTileComponent } from './components/daily-budget-tile/daily-budget-tile.component';
 import { CategoriesComponent } from './containers/categories/categories.component';
 import { CategoryCrudComponent } from './components/category-crud/category-crud.component';
+import { IconPickerComponent } from './components/icon-picker/icon-picker.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { CategoryCrudComponent } from './components/category-crud/category-crud.
     DailyBudgetTileComponent,
     CategoriesComponent,
     CategoryCrudComponent,
+    IconPickerComponent,
   ],
   entryComponents: [
     MoneyMovementCrudComponent,

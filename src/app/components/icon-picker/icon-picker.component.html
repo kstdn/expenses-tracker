@@ -1,0 +1,18 @@
+<div class="icon-picker-container">
+  <form [formGroup]="form">
+    <mat-form-field class="single-line">
+      <mat-label>Icon</mat-label>
+      <input matInput type="text" formControlName="iconSearch" />
+    </mat-form-field>
+    <fa-icon *ngIf="icon" class="selected" [icon]="icon" size="3x"></fa-icon>
+  </form>
+  <div class="icon-options-container">
+    <fa-icon
+      *ngFor="let iconOption of filteredIconOptions"
+      (click)="toggle(iconOption)"
+      [class.selected]="isSelected(iconOption)"
+      [icon]="iconOption"
+      size="3x"
+    ></fa-icon>
+  </div>
+</div>

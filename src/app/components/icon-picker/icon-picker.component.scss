@@ -1,0 +1,30 @@
+@import 'vars';
+
+.icon-options-container {
+  overflow: auto;
+  height: 150px;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2em;
+  justify-content: space-between;
+}
+
+mat-form-field {
+  margin-bottom: -1.2em;
+}
+
+fa-icon {
+  color: $primary;
+  padding: 8px;
+  width: 20%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+fa-icon.selected {
+  background: $weak-link;
+  border-radius: 20px;
+}

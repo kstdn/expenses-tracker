@@ -3,14 +3,11 @@
 </div>
 <div class="dialog-body">
     <form [formGroup]='form'>
-        <mat-form-field class="single-line">
+      <mat-form-field class="single-line">
             <mat-label>Name</mat-label>
             <input matInput type="text" formControlName='name'>
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>Icon</mat-label>
-          <input matInput type="text" formControlName='sign'>
-        </mat-form-field>
+        <et-icon-picker [icon]="sign" (iconSelected)="sign = $event"></et-icon-picker>
     </form>
 </div>
 <div class="dialog-footer">

@@ -57,6 +57,14 @@ export class CategoryCrudComponent implements OnInit {
     }
   }
 
+  get sign() {
+    return this.form.controls.sign.value;
+  }
+
+  set sign(sign: string) {
+    this.form.controls.sign.setValue(sign);
+  }
+
   isInEditMode() {
     return this.input.category;
   }
