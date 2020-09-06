@@ -71,7 +71,7 @@ export class MoneyMovementCrudComponent implements OnInit {
       amount: [0, Validators.min(1)],
       timestamp: [new Date(), Validators.required],
       description: "",
-      categoryId: "",
+      categoryId: undefined,
     });
 
     if (this.input.movement) {
